@@ -5,89 +5,87 @@
     <title>PPA DISC System</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .block { border: 1px solid #ccc; margin-bottom: 20px; border-radius: 8px; overflow: hidden; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; border-bottom: 1px solid #eee; padding: 10px; align-items: center; }
-        .header { background: #1a237e; color: white; font-weight: bold; }
-        .charts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; }
-        canvas { background: #fff; border: 1px solid #ddd; height: 300px !important; }
-        button { width: 100%; padding: 20px; background: #2e7d32; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; }
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .block { border: 1px solid #ddd; margin-bottom: 20px; border-radius: 8px; }
+        .header { background: #1a237e; color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 10px; font-weight: bold; text-align: center; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 10px; border-bottom: 1px solid #eee; align-items: center; }
+        .row:last-child { border-bottom: none; }
+        .word { font-weight: 500; }
+        button { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; }
+        #results { display: none; margin-top: 20px; }
+        .charts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        canvas { background: #fff; border: 1px solid #eee; }
     </style>
 </head>
 <body>
-<div class="container">
-    <div id="q-page">
-        <h2 style="text-align:center">Анкета PPA</h2>
-        <div class="row header"><div>Слова</div><div>Б</div><div>М</div></div>
-        <div id="form"></div>
-        <button onclick="calc()">Результат</button>
-    </div>
-    <div id="r-page" style="display:none">
-        <div class="charts">
-            <div><p>Работа</p><canvas id="c1"></canvas></div>
-            <div><p>Давление</p><canvas id="c2"></canvas></div>
-            <div><p>Автопортрет</p><canvas id="c3"></canvas></div>
+    <div class="container">
+        <div id="quiz">
+            <h2 style="text-align:center">Тест PPA</h2>
+            <div class="header"><div>Слово</div><div>Б</div><div>М</div></div>
+            <div id="content"></div>
+            <button onclick="calc()">ПОЛУЧИТЬ ГРАФИКИ</button>
+        </div>
+        <div id="results">
+            <div class="charts">
+                <div><p align="center">Работа</p><canvas id="g1"></canvas></div>
+                <div><p align="center">Давление</p><canvas id="g2"></canvas></div>
+                <div><p align="center">Итог</p><canvas id="g3"></canvas></div>
+            </div>
+            <button onclick="window.print()" style="background:#1a237e; margin-top:10px;">ПЕЧАТЬ В PDF</button>
         </div>
     </div>
-</div>
+
 <script>
-const data = {
-    1:{"Мягкий":["S","I"],"Убеждающий":["Mask","S"],"Скромный":["C","D"],"Оригинальный":["D","C"]},
-    2:{"Привлекательный":["I","C"],"Обязательный":["Mask","D"],"Упорный":["D","S"],"Милый":["Mask","Mask"]},
-    3:{"Управляемый":["C","D"],"Смелый":["D","S"],"Верный":["S","I"],"Обворожительный":["I","C"]},
-    4:{"Прогрессивный":["D","S"],"Любезный":["S","I"],"Волевой":["D","S"],"Веселый":["I","C"]},
-    5:{"Жизнерадостный":["I","C"],"Точный":["C","D"],"Отважный":["D","S"],"Уравновешенный":["S","I"]},
-    6:{"Соперничающий":["D","S"],"Тактичный":["C","D"],"Счастливый":["I","C"],"Гармоничный":["S","Mask"]},
-    7:{"Суетливый":["C","S"],"Послушный":["S","I"],"Непобедимый":["D","S"],"Игривый":["I","C"]},
-    8:{"Храбрый":["D","S"],"Воодушевляющий":["I","C"],"Покорный":["C","D"],"Застенчивый":["C","D"]},
-    9:{"Общительный":["I","C"],"Терпеливый":["S","I"],"Самоуверенный":["D","S"],"Учтивый":["C","D"]},
-    10:{"Предприимчивый":["D","S"],"Восприимчивый":["S","I"],"Искренний":["S","Mask"],"Воздержанный":["C","I"]},
-    11:{"Разговорчивый":["I","C"],"Самоуправляемый":["Mask","Mask"],"Законопослушный":["C","D"],"Решительный":["D","S"]},
-    12:{"Утонченный":["C","D"],"Смелый":["D","S"],"Дипломатичный":["C","D"],"Довольный":["S","I"]},
-    13:{"Агрессивный":["D","S"],"Душа общества":["I","C"],"Безотказный":["Mask","Mask"],"Боязливый":["C","D"]},
-    14:{"Осторожный":["C","D"],"Непреклонный":["D","S"],"Убедительный":["Mask","S"],"Добродушный":["S","I"]},
-    15:{"Целеустремленный":["S","S"],"Стремящийся":["D","S"],"Соглашающийся":["S","D"],"Неунывающий":["I","C"]},
-    16:{"Уверенный":["D","S"],"Сочувствующий":["S","I"],"Терпимый":["C","D"],"Напористый":["D","S"]},
-    17:{"Дисциплинированный":["C","D"],"Щедрый":["Mask","Mask"],"Подвижный":["I","C"],"Настойчивый":["D","S"]},
-    18:{"Восхитительный":["I","C"],"Добрый":["S","I"],"Безропотный":["S","D"],"Волевой":["Mask","S"]},
-    19:{"Уважительный":["C","D"],"Лидирующий":["D","C"],"Оптимистичный":["I","C"],"Уживчивый":["Mask","Mask"]},
-    20:{"Аргументирующий":["Mask","S"],"Адаптирующийся":["S","C"],"Безразличный":["C","S"],"Беззаботный":["I","C"]},
-    21:{"Доверчивый":["S","C"],"Довольный":["S","I"],"Позитивный":["I","C"],"Мирный":["S","D"]},
-    22:{"Компанейский":["I","C"],"Культурный":["C","D"],"Энергичный":["I","C"],"Снисходительный":["S","D"]},
-    23:{"Общительный":["Mask","C"],"Аккуратный":["C","D"],"Прямолинейный":["D","S"],"Сдержанный":["S","I"]},
-    24:{"Неугомонный":["D","I"],"Добрососедский":["Mask","Mask"],"Популярный":["I","C"],"Преданный":["S","Mask"]}
+const words = [
+    ["Мягкий","Убеждающий","Скромный","Оригинальный"],["Привлекательный","Обязательный","Упорный","Милый"],
+    ["Управляемый","Смелый","Верный","Обворожительный"],["Прогрессивный","Любезный","Волевой","Веселый"],
+    ["Жизнерадостный","Точный","Отважный","Уравновешенный"],["Соперничающий","Тактичный","Счастливый","Гармоничный"],
+    ["Суетливый","Послушный","Непобедимый","Игривый"],["Храбрый","Воодушевляющий","Покорный","Застенчивый"],
+    ["Общительный","Терпеливый","Самоуверенный","Учтивый"],["Предприимчивый","Восприимчивый","Искренний","Воздержанный"],
+    ["Разговорчивый","Самоуправляемый","Законопослушный","Решительный"],["Утонченный","Смелый","Дипломатичный","Довольный"],
+    ["Агрессивный","Душа общества","Безотказный","Боязливый"],["Осторожный","Непреклонный","Убедительный","Добродушный"],
+    ["Целеустремленный","Стремящийся","Соглашающийся","Неунывающий"],["Уверенный","Сочувствующий","Терпимый","Напористый"],
+    ["Дисциплинированный","Щедрый","Подвижный","Настойчивый"],["Восхитительный","Добрый","Безропотный","Волевой"],
+    ["Уважительный","Лидирующий","Оптимистичный","Уживчивый"],["Аргументирующий","Адаптирующийся","Безразличный","Беззаботный"],
+    ["Доверчивый","Довольный","Позитивный","Мирный"],["Компанейский","Культурный","Энергичный","Снисходительный"],
+    ["Общительный","Аккуратный","Прямолинейный","Сдержанный"],["Неугомонный","Добрососедский","Популярный","Преданный"]
+];
+
+const logic = {
+    "Мягкий":["S","I"],"Убеждающий":["Mask","S"],"Скромный":["C","D"],"Оригинальный":["D","C"],"Привлекательный":["I","C"],"Обязательный":["Mask","D"],"Упорный":["D","S"],"Милый":["Mask","Mask"],"Управляемый":["C","D"],"Смелый":["D","S"],"Верный":["S","I"],"Обворожительный":["I","C"],"Прогрессивный":["D","S"],"Любезный":["S","I"],"Волевой":["D","S"],"Веселый":["I","C"],"Жизнерадостный":["I","C"],"Точный":["C","D"],"Отважный":["D","S"],"Уравновешенный":["S","I"],"Соперничающий":["D","S"],"Тактичный":["C","D"],"Счастливый":["I","C"],"Гармоничный":["S","Mask"],"Суетливый":["C","S"],"Послушный":["S","I"],"Непобедимый":["D","S"],"Игривый":["I","C"],"Храбрый":["D","S"],"Воодушевляющий":["I","C"],"Покорный":["C","D"],"Застенчивый":["C","D"],"Общительный":["I","C"],"Терпеливый":["S","I"],"Самоуверенный":["D","S"],"Учтивый":["C","D"],"Предприимчивый":["D","S"],"Восприимчивый":["S","I"],"Искренний":["S","Mask"],"Воздержанный":["C","I"],"Разговорчивый":["I","C"],"Самоуправляемый":["Mask","Mask"],"Законопослушный":["C","D"],"Решительный":["D","S"],"Утонченный":["C","D"],"Смелый":["D","S"],"Дипломатичный":["C","D"],"Довольный":["S","I"],"Агрессивный":["D","S"],"Душа общества":["I","C"],"Безотказный":["Mask","Mask"],"Боязливый":["C","D"],"Осторожный":["C","D"],"Непреклонный":["D","S"],"Убедительный":["Mask","S"],"Добродушный":["S","I"],"Целеустремленный":["S","S"],"Стремящийся":["D","S"],"Соглашающийся":["S","D"],"Неунывающий":["I","C"],"Уверенный":["D","S"],"Сочувствующий":["S","I"],"Терпимый":["C","D"],"Напористый":["D","S"],"Дисциплинированный":["C","D"],"Щедрый":["Mask","Mask"],"Подвижный":["I","C"],"Настойчивый":["D","S"],"Восхитительный":["I","C"],"Добрый":["S","I"],"Безропотный":["S","D"],"Волевой":["Mask","S"],"Уважительный":["C","D"],"Лидирующий":["D","C"],"Оптимистичный":["I","C"],"Уживчивый":["Mask","Mask"],"Аргументирующий":["Mask","S"],"Адаптирующийся":["S","C"],"Безразличный":["C","S"],"Беззаботный":["I","C"],"Доверчивый":["S","C"],"Довольный":["S","I"],"Позитивный":["I","C"],"Мирный":["S","D"],"Компанейский":["I","C"],"Культурный":["C","D"],"Энергичный":["I","C"],"Снисходительный":["S","D"],"Общительный":["Mask","C"],"Аккуратный":["C","D"],"Прямолинейный":["D","S"],"Сдержанный":["S","I"],"Неугомонный":["D","I"],"Добрососедский":["Mask","Mask"],"Популярный":["I","C"],"Преданный":["S","Mask"]
 };
-const f = document.getElementById('form');
-for (let i=1; i<=24; i++) {
-    let html = `<div class="block">`;
-    Object.keys(data[i]).forEach(w => {
-        html += `<div class="row"><div>${w}</div>
-        <input type="radio" name="m${i}" value="${w}">
-        <input type="radio" name="l${i}" value="${w}"></div>`;
+
+let html = "";
+words.forEach((group, i) => {
+    html += `<div class="block">`;
+    group.forEach(w => {
+        html += `<div class="row"><div class="word">${w}</div>
+        <div align="center"><input type="radio" name="m${i}" value="${w}"></div>
+        <div align="center"><input type="radio" name="l${i}" value="${w}"></div></div>`;
     });
-    f.innerHTML += html + `</div>`;
-}
+    html += `</div>`;
+});
+document.getElementById('content').innerHTML = html;
+
 function calc() {
     let g1={D:0,I:0,S:0,C:0}, g2={D:0,I:0,S:0,C:0};
-    for(let i=1;i<=24;i++){
-        let mv=document.querySelector(`input[name="m${i}"]:checked`)?.value;
-        let lv=document.querySelector(`input[name="l${i}"]:checked`)?.value;
-        if(!mv || !lv) { alert('Заполните ряд '+i); return; }
-        if(data[i][mv][0]!=='Mask') g1[data[i][mv][0]]++;
-        if(data[i][lv][1]!=='Mask') g2[data[i][lv][1]]++;
+    for(let i=0; i<24; i++) {
+        let mv = document.querySelector(`input[name="m${i}"]:checked`)?.value;
+        let lv = document.querySelector(`input[name="l${i}"]:checked`)?.value;
+        if(!mv || !lv) {alert("Заполните все ряды!"); return;}
+        if(logic[mv][0]!=="Mask") g1[logic[mv][0]]++;
+        if(logic[lv][1]!=="Mask") g2[logic[lv][1]]++;
     }
-    document.getElementById('q-page').style.display='none';
-    document.getElementById('r-page').style.display='block';
-    const chart = (id, sc, min, max) => {
-        new Chart(document.getElementById(id), {
-            type:'line', data:{labels:['D','I','S','C'], datasets:[{data:[sc.D,sc.I,sc.S,sc.C],borderColor:'#1a237e'}]},
-            options:{scales:{y:{min:min,max:max}}}
-        });
-    };
-    chart('c1', g1, 0, 15); chart('c2', g2, 0, 15);
-    chart('c3', {D:g1.D-g2.D,I:g1.I-g2.I,S:g1.S-g2.S,C:g1.C-g2.C}, -10, 15);
-}
-</script>
-</body>
-</html>
+    document.getElementById('quiz').style.display='none';
+    document.getElementById('results').style.display='block';
+    const opt = (s, min, max) => ({
+        type:'line', data:{labels:['D','I','S','C'], datasets:[{data:[s.D,s.I,s.S,sc.C],borderColor:'#1a237e'}]},
+        options:{scales:{y:{min,max}}}
+    });
+    const render = (id, sc, min, max) => new Chart(document.getElementById(id), {
+        type:'line', data:{labels:['D','I','S','C'], datasets:[{data:[sc.D,sc.I,sc.S,sc.C],borderColor:'#1a237e'}]},
+        options:{scales:{y:{min,max}}}
+    });
+    render('g1', g1, 0, 15); render('g2', g2, 0, 15);
+    render('g3', {D:g1.D-g2.D, I:
