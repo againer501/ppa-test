@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISC PPA System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a237e; }
+        .instruction { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 0.9em; }
+        .test-row { display: grid; grid-template-columns: 1fr 100px 100px; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .test-row:hover { background-color: #fafafa; }
+        .word-group { font-weight: 600; color: #444; }
+        .header-row { font-weight: bold; position: sticky; top: 0; background: white; z-index: 10; border-bottom: 2px solid #1a237e; }
+        .radio-cell { text-align: center; }
+        button { display: block; width: 100%; padding: 15px; background: #1a237e; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        button:hover { background: #303f9f; }
+        #results { display: none; margin-top: 40px; }
+        .charts-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+        canvas { max-width: 100%; height: 400px !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Профиль Личности (PPA)</h1>
+    <div class="instruction">
+        В каждой строке выберите <b>одно</b> слово, которое лучше всего вас описывает (Б — наиболее), 
+        и <b>одно</b> слово, которое описывает вас меньше всего (М — наименее).
+    </div>
+
+    <div id="test-form">
+        <div class="test-row header-row">
+            <div>Список слов</div>
+            <div class="radio-cell">Наиболее (Б)</div>
+            <div class="radio-cell">Наименее (М)</div>
+        </div>
+        <div id="questions-container"></div>
+        <button onclick="processTest()">Получить результаты</button>
+    </div>
+
+    <div id="results">
+        <h2>Ваш отчет</h2>
+        <div class="charts-grid">
+            <div>
+                <h3>График III: Автопортрет</h3>
+                <canvas id="chartG3"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const lookupTable = {
+    1: {"Мягкий":{G1:"S",G2:"I"},"Убеждающий":{G1:"Mask",G2:"S"},"Скромный":{G1:"C",G2:"D"},"Оригинальный":{G1:"D",G2:"C"}},
+    2: {"Привлекательный":{G1:"I",G2:"C"},"Обязательный":{G1:"Mask",G2:"D"},"Упорный":{G1:"D",G2:"S"},"Милый":{G1:"Mask",G2:"Mask"}},
+    3: {"Управляемый":{G1:"C",G2:"D"},"Смелый":{G1:"D",G2:"S"},"Верный":{G1:"S",G2:"I"},"Обворожительный":{G1:"I",G2:"C"}},
+    4: {"Прогрессивный":{G1:"D",G2:"S"},"Любезный":{G1:"S",G2:"I"},"Волевой":{G1:"D",G2:"S"},"Веселый":{G1:"I",G2:"C"}},
+    5: {"Жизнерадостный":{G1:"I",G2:"C"},"Точный":{G1:"C",G2:"D"},"Отважный":{G1:"D",G2:"S"},"Уравновешенный":{G1:"S",G2:"I"}},
+    6: {"Соперничающий":{G1:"D",G2:"S"},"Тактичный":{G1:"C",G2:"D"},"Счастливый":{G1:"I",G2:"C"},"Гармоничный":{G1:"S",G2:"Mask"}},
+    7: {"Суетливый":{G1:"C",G2:"S"},"Послушный":{G1:"S",G2:"I"},"Непобедимый":{G1:"D",G2:"S"},"Игривый":{G1:"I",G2:"C"}},
+    8: {"Храбрый":{G1:"D",G2:"S"},"Воодушевляющий":{G1:"I",G2:"C"},"Покорный":{G1:"C",G2:"D"},"Застенчивый":{G1:"C",G2:"D"}},
+    9: {"Общительный":{G1:"I",G2:"C"},"Терпеливый":{G1:"S",G2:"I"},"Самоуверенный":{G1:"D",G2:"S"},"Учтивый":{G1:"C",G2:"D"}},
+    10: {"Предприимчивый":{G1:"D",G2:"S"},"Восприимчивый":{G1:"S",G2:"I"},"Искренний":{G1:"S",G2:"Mask"},"Воздержанный":{G1:"C",G2:"I"}},
+    11: {"Разговорчивый":{G1:"I",G2:"C"},"Самоуправляемый":{G1:"Mask",G2:"Mask"},"Законопослушный":{G1:"C",G2:"D"},"Решительный":{G1:"D",G2:"S"}},
+    12: {"Утонченный":{G1:"C",G2:"D"},"Смелый":{G1:"D",G2:"S"},"Дипломатичный":{G1:"C",G2:"D"},"Довольный":{G1:"S",G2:"I"}},
+    13: {"Агрессивный":{G1:"D",G2:"S"},
