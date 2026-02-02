@@ -2,50 +2,38 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thomas PPA DISC System</title>
+    <title>Thomas PPA System - Professional Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #1a237e; --bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); min-height: 500px; display: flex; flex-direction: column; }
+        :root { --primary: #1a237e; --bg: #f4f7f9; --zone: rgba(200, 200, 200, 0.4); }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         
-        /* Прогресс-бар */
-        .progress-container { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 30px; overflow: hidden; }
-        #progress-bar { height: 100%; background: var(--primary); width: 4%; transition: 0.3s; }
-
-        /* Анкета */
-        .user-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
-        .user-info input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; }
-        
-        .question-page { display: none; flex-grow: 1; }
+        /* Анкета по страницам */
+        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 25px; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        .question-page { display: none; }
         .question-page.active { display: block; }
         
-        .header { background: var(--primary); color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 15px; font-weight: bold; text-align: center; border-radius: 6px; margin-bottom: 10px; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 20px 15px; border-bottom: 1px solid #eee; align-items: center; font-size: 18px; }
-        .row:hover { background: #fcfcfc; }
-        
-        input[type="radio"] { width: 28px; height: 28px; cursor: pointer; }
-        input[type="radio"]:disabled { opacity: 0.1; }
-
-        /* Кнопки навигации */
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; gap: 20px; }
-        .btn { padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-next { background: var(--primary); color: white; flex-grow: 1; }
-        .btn-prev { background: #e0e0e0; color: #555; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-finish { background: #2e7d32; color: white; display: none; flex-grow: 1; }
+        /* Стили таблицы */
+        .header { background: var(--primary); color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 15px; font-weight: bold; text-align: center; border-radius: 6px; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 18px 15px; border-bottom: 1px solid #eee; align-items: center; font-size: 18px; }
+        input[type="radio"] { width: 26px; height: 26px; cursor: pointer; }
 
         /* Отчет */
         #results { display: none; }
-        .report-title { text-align: center; border-bottom: 3px solid var(--primary); margin-bottom: 30px; padding-bottom: 10px; }
-        .charts-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .chart-wrapper { height: 600px; position: relative; } 
+        .charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px; }
+        .chart-wrapper { height: 650px; position: relative; } 
+        .report-header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        
+        .btn { padding: 15px 25px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-next { background: var(--primary); color: white; width: 100%; }
+        .btn-prev { background: #cfd8dc; color: #37474f; }
         
         @media print {
-            .no-print, .btn, .progress-container, .nav-buttons { display: none !important; }
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+            .no-print, .btn, .progress-bar { display: none !important; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; }
+            .chart-wrapper { height: 700px; }
         }
     </style>
 </head>
@@ -53,194 +41,145 @@
 
 <div class="container">
     <div id="quiz" class="no-print">
-        <h1 style="text-align: center; color: var(--primary); margin-top: 0;">Профиль PPA</h1>
-        
-        <div id="start-screen">
-            <div class="user-info">
-                <input type="text" id="userName" placeholder="ФИО сотрудника">
-                <input type="date" id="testDate">
-            </div>
-            <p style="color: #666; line-height: 1.6;">В каждой из 24 групп выберите одно слово, которое <b>наиболее</b> (Б) точно описывает вас, и одно слово, которое описывает вас <b>наименее</b> (М).</p>
-            <button class="btn btn-next" onclick="startTest()">НАЧАТЬ ТЕСТ</button>
+        <div id="setup">
+            <h1 style="text-align:center; color:var(--primary)">Thomas PPA Assessment</h1>
+            <input type="text" id="uName" placeholder="ФИО сотрудника" style="width:100%; padding:15px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+            <input type="date" id="uDate" style="width:100%; padding:15px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+            <button class="btn btn-next" onclick="start()">НАЧАТЬ ТЕСТИРОВАНИЕ</button>
         </div>
 
-        <div id="test-container" style="display: none;">
-            <div class="progress-container"><div id="progress-bar"></div></div>
-            <h3 id="group-title" style="color: var(--primary);">Группа 1 из 24</h3>
+        <div id="test" style="display:none">
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+            <h3 id="counter" style="color:var(--primary)">Группа 1 из 24</h3>
             <div class="header"><div>Список слов</div><div>Б</div><div>М</div></div>
-            <div id="form-content"></div>
-            
-            <div class="nav-buttons">
-                <button id="prevBtn" class="btn btn-prev" onclick="changePage(-1)">Назад</button>
-                <button id="nextBtn" class="btn btn-next" onclick="changePage(1)">Далее</button>
-                <button id="finishBtn" class="btn btn-finish" onclick="calculatePPA()">ПОЛУЧИТЬ РЕЗУЛЬТАТ</button>
+            <div id="q-box"></div>
+            <div style="display:flex; gap:15px; justify-content:space-between">
+                <button class="btn btn-prev" id="pBtn" onclick="nav(-1)">Назад</button>
+                <button class="btn btn-next" id="nBtn" onclick="nav(1)">Далее</button>
+                <button class="btn btn-next" id="fBtn" onclick="finish()" style="display:none; background:#2e7d32">ЗАВЕРШИТЬ</button>
             </div>
         </div>
     </div>
 
     <div id="results">
-        <div class="report-title">
-            <h2 id="resName">ГРАФИКИ И ЦИФРЫ</h2>
-            <p id="resDate" style="font-weight: bold;"></p>
+        <div class="report-header">
+            <h2 id="rName" style="margin:0">ГРАФИКИ И ЦИФРЫ</h2>
+            <p id="rDate" style="font-size:1.2em; color:#555"></p>
         </div>
-        <div class="charts-container">
-            <div class="chart-card"><h4>Поведение на работе</h4><div class="chart-wrapper"><canvas id="g1"></canvas></div></div>
-            <div class="chart-card"><h4>Под давлением</h4><div class="chart-wrapper"><canvas id="g2"></canvas></div></div>
-            <div class="chart-card"><h4>Автопортрет</h4><div class="chart-wrapper"><canvas id="g3"></canvas></div></div>
+        <div class="charts-grid">
+            <div><h4 style="text-align:center">I: Работа</h4><div class="chart-wrapper"><canvas id="c1"></canvas></div></div>
+            <div><h4 style="text-align:center">II: Давление</h4><div class="chart-wrapper"><canvas id="c2"></canvas></div></div>
+            <div><h4 style="text-align:center">III: Автопортрет</h4><div class="chart-wrapper"><canvas id="c3"></canvas></div></div>
         </div>
-        <button class="btn" onclick="window.print()" style="background: #2e7d32; margin-top: 40px;">СОХРАНИТЬ В PDF</button>
+        <button class="btn btn-next" onclick="window.print()" style="background:#2e7d32; margin-top:40px">СОХРАНИТЬ В PDF</button>
     </div>
 </div>
 
 <script>
-const words = [
-    ["Мягкий","Убеждающий","Скромный","Оригинальный"], ["Привлекательный","Обязательный","Упорный","Милый"],
-    ["Управляемый","Смелый","Верный","Обворожительный"], ["Прогрессивный","Любезный","Волевой","Веселый"],
-    ["Жизнерадостный","Точный","Отважный","Уравновешенный"], ["Соперничающий","Тактичный","Счастливый","Гармоничный"],
-    ["Суетливый","Послушный","Непобедимый","Игривый"], ["Храбрый","Воодушевляющий","Покорный","Застенчивый"],
-    ["Общительный","Терпеливый","Самоуверенный","Учтивый"], ["Предприимчивый","Восприимчивый","Искренний","Воздержанный"],
-    ["Разговорчивый","Самоуправляемый","Законопослушный","Решительный"], ["Утонченный","Смелый","Дипломатичный","Довольный"],
-    ["Агрессивный","Душа общества","Безотказный","Боязливый"], ["Осторожный","Непреклонный","Убедительный","Добродушный"],
-    ["Целеустремленный","Стремящийся","Соглашающийся","Неунывающий"], ["Уверенный","Сочувствующий","Терпимый","Напористый"],
-    ["Дисциплинированный","Щедрый","Подвижный","Настойчивый"], ["Восхитительный","Добрый","Безропотный","Волевой"],
-    ["Уважительный","Лидирующий","Оптимистичный","Уживчивый"], ["Аргументирующий","Адаптирующийся","Безразличный","Беззаботный"],
-    ["Доверчивый","Довольный","Позитивный","Мирный"], ["Компанейский","Культурный","Энергичный","Снисходительный"],
-    ["Общительный","Аккуратный","Прямолинейный","Сдержанный"], ["Неугомонный","Добрососедский","Популярный","Преданный"]
-];
-
+const words = [["Мягкий","Убеждающий","Скромный","Оригинальный"],["Привлекательный","Обязательный","Упорный","Милый"],["Управляемый","Смелый","Верный","Обворожительный"],["Прогрессивный","Любезный","Волевой","Веселый"],["Жизнерадостный","Точный","Отважный","Уравновешенный"],["Соперничающий","Тактичный","Счастливый","Гармоничный"],["Суетливый","Послушный","Непобедимый","Игривый"],["Храбрый","Воодушевляющий","Покорный","Застенчивый"],["Общительный","Терпеливый","Самоуверенный","Учтивый"],["Предприимчивый","Восприимчивый","Искренний","Воздержанный"],["Разговорчивый","Самоуправляемый","Законопослушный","Решительный"],["Утонченный","Смелый","Дипломатичный","Довольный"],["Агрессивный","Душа общества","Безотказный","Боязливый"],["Осторожный","Непреклонный","Убедительный","Добродушный"],["Целеустремленный","Стремящийся","Соглашающийся","Неунывающий"],["Уверенный","Сочувствующий","Терпимый","Напористый"],["Дисциплинированный","Щедрый","Подвижный","Настойчивый"],["Восхитительный","Добрый","Безропотный","Волевой"],["Уважительный","Лидирующий","Оптимистичный","Уживчивый"],["Аргументирующий","Адаптирующийся","Безразличный","Беззаботный"],["Доверчивый","Довольный","Позитивный","Мирный"],["Компанейский","Культурный","Энергичный","Снисходительный"],["Общительный","Аккуратный","Прямолинейный","Сдержанный"],["Неугомонный","Добрососедский","Популярный","Преданный"]];
 const keys = {"Мягкий":["S","I"],"Убеждающий":["Mask","S"],"Скромный":["C","D"],"Оригинальный":["D","C"],"Привлекательный":["I","C"],"Обязательный":["Mask","D"],"Упорный":["D","S"],"Милый":["Mask","Mask"],"Управляемый":["C","D"],"Смелый":["D","S"],"Верный":["S","I"],"Обворожительный":["I","C"],"Прогрессивный":["D","S"],"Любезный":["S","I"],"Волевой":["D","S"],"Веселый":["I","C"],"Жизнерадостный":["I","C"],"Точный":["C","D"],"Отважный":["D","S"],"Уравновешенный":["S","I"],"Соперничающий":["D","S"],"Тактичный":["C","D"],"Счастливый":["I","C"],"Гармоничный":["S","Mask"],"Суетливый":["C","S"],"Послушный":["S","I"],"Непобедимый":["D","S"],"Игривый":["I","C"],"Храбрый":["D","S"],"Воодушевляющий":["I","C"],"Покорный":["C","D"],"Застенчивый":["C","D"],"Общительный":["I","C"],"Терпеливый":["S","I"],"Самоуверенный":["D","S"],"Учтивый":["C","D"],"Предприимчивый":["D","S"],"Восприимчивый":["S","I"],"Искренний":["S","Mask"],"Воздержанный":["C","I"],"Разговорчивый":["I","C"],"Самоуправляемый":["Mask","Mask"],"Законопослушный":["C","D"],"Решительный":["D","S"],"Утонченный":["C","D"],"Смелый":["D","S"],"Дипломатичный":["C","D"],"Довольный":["S","I"],"Агрессивный":["D","S"],"Душа общества":["I","C"],"Безотказный":["Mask","Mask"],"Боязливый":["C","D"],"Осторожный":["C","D"],"Непреклонный":["D","S"],"Убедительный":["Mask","S"],"Добродушный":["S","I"],"Целеустремленный":["S","S"],"Стремящийся":["D","S"],"Соглашающийся":["S","D"],"Неунывающий":["I","C"],"Уверенный":["D","S"],"Сочувствующий":["S","I"],"Терпимый":["C","D"],"Напористый":["D","S"],"Дисциплинированный":["C","D"],"Щедрый":["Mask","Mask"],"Подвижный":["I","C"],"Настойчивый":["D","S"],"Восхитительный":["I","C"],"Добрый":["S","I"],"Безропотный":["S","D"],"Волевой":["Mask","S"],"Уважительный":["C","D"],"Лидирующий":["D","C"],"Оптимистичный":["I","C"],"Уживчивый":["Mask","Mask"],"Аргументирующий":["Mask","S"],"Адаптирующийся":["S","C"],"Безразличный":["C","S"],"Беззаботный":["I","C"],"Доверчивый":["S","C"],"Довольный":["S","I"],"Позитивный":["I","C"],"Мирный":["S","D"],"Компанейский":["I","C"],"Культурный":["C","D"],"Энергичный":["I","C"],"Снисходительный":["S","D"],"Общительный":["Mask","C"],"Аккуратный":["C","D"],"Прямолинейный":["D","S"],"Сдержанный":["S","I"],"Неугомонный":["D","I"],"Добрососедский":["Mask","Mask"],"Популярный":["I","C"],"Преданный":["S","Mask"]};
 
-let currentPage = 0;
+let cur = 0;
 
-function startTest() {
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('test-container').style.display = 'block';
-    renderQuestions();
-    showPage(0);
-}
-
-function renderQuestions() {
-    const form = document.getElementById('form-content');
-    words.forEach((group, i) => {
-        let page = document.createElement('div');
-        page.className = `question-page page-${i}`;
-        group.forEach((word, idx) => {
-            page.innerHTML += `
-                <div class="row">
-                    <div>${word}</div>
-                    <div class="radio-cell"><input type="radio" name="m${i}" value="${word}" onclick="sync(this, ${i}, ${idx}, 'l')"></div>
-                    <div class="radio-cell"><input type="radio" name="l${i}" value="${word}" onclick="sync(this, ${i}, ${idx}, 'm')"></div>
-                </div>`;
+function start() {
+    document.getElementById('setup').style.display='none';
+    document.getElementById('test').style.display='block';
+    const box = document.getElementById('q-box');
+    words.forEach((g, i) => {
+        let p = document.createElement('div');
+        p.className = `question-page q-${i}`;
+        g.forEach((w, idx) => {
+            p.innerHTML += `<div class="row"><div>${w}</div>
+                <div style="text-align:center"><input type="radio" name="m${i}" value="${w}" onclick="sync(${i},${idx},'l')"></div>
+                <div style="text-align:center"><input type="radio" name="l${i}" value="${w}" onclick="sync(${i},${idx},'m')"></div></div>`;
         });
-        form.appendChild(page);
+        box.appendChild(p);
     });
+    update();
 }
 
-function sync(el, groupIdx, rowIdx, targetPrefix) {
-    const targets = document.getElementsByName(targetPrefix + groupIdx);
-    targets.forEach(t => t.disabled = false);
-    targets[rowIdx].disabled = true;
+function sync(g, r, t) {
+    const els = document.getElementsByName(t + g);
+    els.forEach(x => x.disabled = false);
+    els[r].disabled = true;
 }
 
-function showPage(idx) {
-    const pages = document.querySelectorAll('.question-page');
-    pages.forEach(p => p.classList.remove('active'));
-    pages[idx].classList.add('active');
-    
-    document.getElementById('group-title').innerText = `Группа ${idx + 1} из 24`;
-    document.getElementById('progress-bar').style.width = `${((idx + 1) / 24) * 100}%`;
-    
-    document.getElementById('prevBtn').style.visibility = idx === 0 ? 'hidden' : 'visible';
-    document.getElementById('nextBtn').style.display = idx === 23 ? 'none' : 'block';
-    document.getElementById('finishBtn').style.display = idx === 23 ? 'block' : 'none';
+function update() {
+    document.querySelectorAll('.question-page').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.q-${cur}`).classList.add('active');
+    document.getElementById('counter').innerText = `Группа ${cur + 1} из 24`;
+    document.getElementById('progress-fill').style.width = `${((cur + 1) / 24) * 100}%`;
+    document.getElementById('pBtn').style.visibility = cur === 0 ? 'hidden' : 'visible';
+    document.getElementById('nBtn').style.display = cur === 23 ? 'none' : 'block';
+    document.getElementById('fBtn').style.display = cur === 23 ? 'block' : 'none';
 }
 
-function changePage(delta) {
-    const nextIdx = currentPage + delta;
-    if (delta > 0) {
-        const m = document.querySelector(`input[name="m${currentPage}"]:checked`);
-        const l = document.querySelector(`input[name="l${currentPage}"]:checked`);
-        if (!m || !l) { alert("Выберите варианты Б и М для текущей группы"); return; }
+function nav(d) {
+    if(d > 0 && (!document.querySelector(`input[name="m${cur}"]:checked`) || !document.querySelector(`input[name="l${cur}"]:checked`))) {
+        alert("Выберите оба варианта"); return;
     }
-    currentPage = nextIdx;
-    showPage(currentPage);
+    cur += d; update();
 }
 
-// Плагин графики и отрисовка (оставлены без изменений для соблюдения стиля Thomas PPA)
-const ppaPlugin = {
-    id: 'ppaPlugin',
+// ПЛАГИН ОТРИСОВКИ ЗОН ИЗ УЧЕБНИКА
+const ppaZones = {
     beforeDraw: (chart) => {
         const {ctx, chartArea: {top, bottom, left, right, height}, scales: {y}} = chart;
-        const rowH = height / (y.max - y.min);
+        const unit = height / (y.max - y.min);
         ctx.save();
-        ctx.fillStyle = 'rgba(232, 245, 233, 0.6)';
-        ctx.fillRect(left, top, right - left, rowH * 2.5); 
-        ctx.fillRect(left, bottom - (rowH * 2.5), right - left, rowH * 2.5);
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
+        // Верхняя зона (High)
+        ctx.fillRect(left, top, right - left, unit * 2.5);
+        // Нижняя зона (Low)
+        ctx.fillRect(left, bottom - (unit * 2.5), right - left, unit * 2.5);
+        // Центральная зона (Situational)
+        const mid = height / 2 + top;
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.15)';
+        ctx.fillRect(left, mid - (unit * 1.5), right - left, unit * 3);
         ctx.restore();
     },
     afterDraw: (chart) => {
         const {ctx, scales: {x, y}} = chart;
-        ctx.save();
-        ctx.font = 'bold 16px Arial';
-        ctx.fillStyle = '#1a237e';
-        ctx.textAlign = 'center';
-        chart.data.datasets[0].data.forEach((val, i) => {
-            ctx.fillText(val, x.getPixelForValue(i), y.getPixelForValue(y.min) + 50); 
+        ctx.font = 'bold 15px Arial'; ctx.fillStyle = '#1a237e'; ctx.textAlign = 'center';
+        chart.data.datasets[0].data.forEach((v, i) => {
+            ctx.fillText(v, x.getPixelForValue(i), y.getPixelForValue(y.min) + 50);
         });
-        ctx.restore();
     }
 };
 
-function draw(id, sc, min, max) {
+function drawChart(id, vals, min, max) {
     new Chart(document.getElementById(id), {
         type: 'line',
-        data: {
-            labels: ['D', 'I', 'S', 'C'],
-            datasets: [{
-                data: [sc.D, sc.I, sc.S, sc.C],
-                borderColor: '#1a237e',
-                borderWidth: 3,
-                pointRadius: 7,
-                pointBackgroundColor: '#1a237e',
-                fill: false,
-                tension: 0
-            }]
-        },
-        plugins: [ppaPlugin],
+        data: { labels: ['D','I','S','C'], datasets: [{ data: [vals.D, vals.I, vals.S, vals.C], borderColor: '#1a237e', borderWidth: 3, pointRadius: 8, fill: false, tension: 0 }] },
+        plugins: [ppaZones],
         options: {
             maintainAspectRatio: false,
-            layout: { padding: { bottom: 70, top: 20, left: 15, right: 15 } },
+            layout: { padding: { bottom: 60, top: 20 } },
             scales: {
-                y: { min, max, ticks: { display: false }, grid: { color: '#e0e0e0' }, border: { display: false } },
-                x: { 
-                    grid: { display: true, drawOnChartArea: true, color: '#f0f0f0' },
-                    ticks: { font: { weight: 'bold', size: 18 }, padding: 20 }
-                }
+                y: { min, max, ticks: { display: false }, grid: { color: '#f0f0f0' } },
+                x: { ticks: { font: { weight: 'bold', size: 18 }, padding: 15 }, grid: { display: true } }
             },
             plugins: { legend: { display: false } }
         }
     });
 }
 
-function calculatePPA() {
+function finish() {
     let g1 = {D:0,I:0,S:0,C:0}, g2 = {D:0,I:0,S:0,C:0};
-    for (let i = 0; i < 24; i++) {
-        const m = document.querySelector(`input[name="m${i}"]:checked`)?.value;
-        const l = document.querySelector(`input[name="l${i}"]:checked`)?.value;
-        if (!m || !l) { alert(`Группа ${i+1} не заполнена!`); return; }
-        if (keys[m][0] !== "Mask") g1[keys[m][0]]++;
-        if (keys[l][1] !== "Mask") g2[keys[l][1]]++;
+    for(let i=0; i<24; i++) {
+        let m = document.querySelector(`input[name="m${i}"]:checked`).value;
+        let l = document.querySelector(`input[name="l${i}"]:checked`).value;
+        if(keys[m][0] !== "Mask") g1[keys[m][0]]++;
+        if(keys[l][1] !== "Mask") g2[keys[l][1]]++;
     }
+    document.getElementById('rName').innerText = "ГРАФИКИ И ЦИФРЫ: " + (document.getElementById('uName').value || "Кандидат");
+    document.getElementById('rDate').innerText = document.getElementById('uDate').value || new Date().toLocaleDateString();
+    document.getElementById('quiz').style.display='none';
+    document.getElementById('results').style.display='block';
     
-    document.getElementById('resName').innerText = "ГРАФИКИ И ЦИФРЫ: " + (document.getElementById('userName').value || "Иван Иванов");
-    document.getElementById('resDate').innerText = (document.getElementById('testDate').value || new Date().toLocaleDateString());
-    
-    document.getElementById('quiz').style.display = 'none';
-    document.getElementById('results').style.display = 'block';
-    
-    draw('g1', g1, 0, 16);
-    draw('g2', g2, 0, 16);
-    draw('g3', {D:g1.D-g2.D, I:g1.I-g2.I, S:g1.S-g2.S, C:g1.C-g2.C}, -12, 12);
+    drawChart('c1', g1, 0, 16);
+    drawChart('c2', g2, 0, 16);
+    drawChart('c3', {D:g1.D-g2.D, I:g1.I-g2.I, S:g1.S-g2.S, C:g1.C-g2.C}, -12, 12);
 }
 </script>
 </body>
