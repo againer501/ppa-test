@@ -8,33 +8,31 @@
     <style>
         :root { --primary: #1a237e; --bg: #f0f4f8; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; }
-        .instruction { text-align: center; color: #666; margin-bottom: 30px; padding: 15px; background: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9; }
-        .header { background: var(--primary); color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 15px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 10; border-radius: 8px 8px 0 0; }
-        .block { border: 1px solid #e0e0e0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; }
-        .block-title { background: #f5f5f5; padding: 10px 15px; font-weight: bold; color: var(--primary); border-bottom: 1px solid #e0e0e0; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; align-items: center; }
-        .row:last-child { border-bottom: none; }
-        .radio-cell { text-align: center; }
-        input[type="radio"] { width: 20px; height: 20px; cursor: pointer; }
-        input[type="radio"]:disabled { opacity: 0.2; cursor: not-allowed; }
-        .user-info { margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .user-info input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
-        button { width: 100%; padding: 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #0d174a; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         
-        #results { display: none; }
-        .charts-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .chart-card { background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 10px; text-align: center; }
-        .chart-card h4 { margin: 5px 0; font-size: 0.9em; color: var(--primary); }
-        .report-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
+        /* Анкета */
+        .instruction { text-align: center; color: #666; margin-bottom: 30px; padding: 15px; background: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9; }
+        .header { background: var(--primary); color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 15px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 10; }
+        .block { border: 1px solid #e0e0e0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 10px 15px; border-bottom: 1px solid #f0f0f0; align-items: center; }
+        input[type="radio"] { width: 22px; height: 22px; cursor: pointer; }
+        input[type="radio"]:disabled { opacity: 0.1; }
 
+        /* Отчет */
+        #results { display: none; }
+        .charts-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 30px; }
+        .chart-card { background: #fff; padding: 10px; text-align: center; border: 1px solid #eee; border-radius: 8px; }
+        /* Растягиваем график по вертикали */
+        .chart-wrapper { height: 500px; position: relative; margin-bottom: 20px; } 
+        
+        .report-header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        button { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        
         @media print {
-            body { background: white; padding: 0; }
             .no-print, button { display: none !important; }
-            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
-            .charts-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; max-width: 100%; }
+            .chart-wrapper { height: 550px; }
         }
     </style>
 </head>
@@ -43,12 +41,9 @@
 <div class="container">
     <div id="quiz" class="no-print">
         <h1>Профиль Личности (PPA)</h1>
-        <div class="user-info">
-            <input type="text" id="userName" placeholder="ФИО сотрудника">
-            <input type="date" id="testDate">
-        </div>
-        <div class="instruction">
-            В каждой строке выберите <b>одно</b> слово "Наиболее" (Б) и <b>одно</b> слово "Наименее" (М).
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+            <input type="text" id="userName" placeholder="ФИО сотрудника" style="padding:10px; border:1px solid #ccc; border-radius:5px;">
+            <input type="date" id="testDate" style="padding:10px; border:1px solid #ccc; border-radius:5px;">
         </div>
         <div class="header"><div>Список слов</div><div>Наиболее (Б)</div><div>Наименее (М)</div></div>
         <div id="form-content"></div>
@@ -61,12 +56,20 @@
             <p id="resDate"></p>
         </div>
         <div class="charts-container">
-            <div class="chart-card"><h4>I: Работа</h4><canvas id="g1"></canvas></div>
-            <div class="chart-card"><h4>II: Давление</h4><canvas id="g2"></canvas></div>
-            <div class="chart-card"><h4>III: Автопортрет</h4><canvas id="g3"></canvas></div>
+            <div class="chart-card">
+                <h4>I: Поведение на работе</h4>
+                <div class="chart-wrapper"><canvas id="g1"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h4>II: Под давлением</h4>
+                <div class="chart-wrapper"><canvas id="g2"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h4>III: Автопортрет</h4>
+                <div class="chart-wrapper"><canvas id="g3"></canvas></div>
+            </div>
         </div>
         <button onclick="window.print()" style="background: #2e7d32;">СОХРАНИТЬ В PDF</button>
-        <button onclick="location.reload()" style="background: #666; margin-top: 10px; font-size: 0.9em; padding: 10px;">Пройти заново</button>
     </div>
 </div>
 
@@ -92,7 +95,7 @@ const form = document.getElementById('form-content');
 words.forEach((group, i) => {
     let block = document.createElement('div');
     block.className = 'block';
-    block.innerHTML = `<div class="block-title">Группа ${i+1}</div>`;
+    block.innerHTML = `<div class="block-title" style="background:#f5f5f5; padding:8px 15px;">Группа ${i+1}</div>`;
     group.forEach((word, idx) => {
         block.innerHTML += `
             <div class="row">
@@ -110,35 +113,31 @@ function sync(el, groupIdx, rowIdx, targetPrefix) {
     targets[rowIdx].disabled = true;
 }
 
-const backgroundPlugin = {
-    id: 'customBackground',
+const customPlugins = {
     beforeDraw: (chart) => {
         const {ctx, chartArea: {top, bottom, left, right, height}, scales: {y}} = chart;
         const rowH = height / (y.max - y.min);
         ctx.save();
-        ctx.fillStyle = 'rgba(232, 245, 233, 0.6)'; // Светло-зеленый как в оригинале
-        ctx.fillRect(left, top, right - left, rowH * 2.5); // Верхняя зона
-        ctx.fillRect(left, bottom - (rowH * 2.5), right - left, rowH * 2.5); // Нижняя зона
+        ctx.fillStyle = 'rgba(232, 245, 233, 0.5)';
+        ctx.fillRect(left, top, right - left, rowH * 2.5); 
+        ctx.fillRect(left, bottom - (rowH * 2.5), right - left, rowH * 2.5);
         ctx.restore();
-    }
-};
-
-const numbersPlugin = {
-    id: 'bottomNumbers',
+    },
     afterDraw: (chart) => {
         const {ctx, scales: {x, y}} = chart;
         ctx.save();
-        ctx.font = 'bold 12px Arial';
-        ctx.fillStyle = '#1a237e';
+        ctx.font = 'bold 15px Arial';
+        ctx.fillStyle = var(--primary);
         ctx.textAlign = 'center';
         chart.data.datasets[0].data.forEach((val, i) => {
-            ctx.fillText(val, x.getPixelForValue(i), y.getPixelForValue(y.min) + 20);
+            // Цифры рисуются ниже букв
+            ctx.fillText(val, x.getPixelForValue(i), y.getPixelForValue(y.min) + 45); 
         });
         ctx.restore();
     }
 };
 
-function drawChart(id, sc, min, max) {
+function draw(id, sc, min, max) {
     new Chart(document.getElementById(id), {
         type: 'line',
         data: {
@@ -146,19 +145,23 @@ function drawChart(id, sc, min, max) {
             datasets: [{
                 data: [sc.D, sc.I, sc.S, sc.C],
                 borderColor: '#1a237e',
-                borderWidth: 3,
+                borderWidth: 2.5,
                 pointRadius: 6,
                 pointBackgroundColor: '#1a237e',
                 fill: false,
                 tension: 0
             }]
         },
-        plugins: [backgroundPlugin, numbersPlugin],
+        plugins: [customPlugins],
         options: {
-            layout: { padding: { bottom: 25 } },
+            maintainAspectRatio: false, // Важно для вертикальной растяжки
+            layout: { padding: { bottom: 60, top: 20, left: 10, right: 10 } },
             scales: {
-                y: { min, max, ticks: { display: false }, grid: { color: '#eee' } },
-                x: { ticks: { font: { weight: 'bold', size: 14 } }, grid: { display: false } }
+                y: { min, max, ticks: { display: false }, grid: { color: '#f0f0f0' }, border: { display: false } },
+                x: { 
+                    grid: { display: true, drawOnChartArea: true, color: '#f0f0f0' },
+                    ticks: { font: { weight: 'bold', size: 16 }, padding: 15 }
+                }
             },
             plugins: { legend: { display: false } }
         }
@@ -170,20 +173,18 @@ function calculatePPA() {
     for (let i = 0; i < 24; i++) {
         const m = document.querySelector(`input[name="m${i}"]:checked`)?.value;
         const l = document.querySelector(`input[name="l${i}"]:checked`)?.value;
-        if (!m || !l) { alert("Пожалуйста, заполните все 24 группы."); return; }
+        if (!m || !l) { alert("Заполните все группы"); return; }
         if (keys[m][0] !== "Mask") g1[keys[m][0]]++;
         if (keys[l][1] !== "Mask") g2[keys[l][1]]++;
     }
-    
     document.getElementById('resName').innerText = "Профиль: " + (document.getElementById('userName').value || "Кандидат");
     document.getElementById('resDate').innerText = "Дата: " + (document.getElementById('testDate').value || new Date().toLocaleDateString());
-    
     document.getElementById('quiz').style.display = 'none';
     document.getElementById('results').style.display = 'block';
     
-    drawChart('g1', g1, 0, 15);
-    drawChart('g2', g2, 0, 15);
-    drawChart('g3', {D:g1.D-g2.D, I:g1.I-g2.I, S:g1.S-g2.S, C:g1.C-g2.C}, -12, 12);
+    draw('g1', g1, 0, 16);
+    draw('g2', g2, 0, 16);
+    draw('g3', {D:g1.D-g2.D, I:g1.I-g2.I, S:g1.S-g2.S, C:g1.C-g2.C}, -12, 12);
 }
 </script>
 </body>
