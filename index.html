@@ -2,68 +2,92 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DISC PPA System</title>
+    <title>PPA DISC System</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; line-height: 1.6; }
-        .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1a237e; }
-        .instruction { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 0.9em; }
-        .test-row { display: grid; grid-template-columns: 1fr 100px 100px; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
-        .test-row:hover { background-color: #fafafa; }
-        .word-group { font-weight: 600; color: #444; }
-        .header-row { font-weight: bold; position: sticky; top: 0; background: white; z-index: 10; border-bottom: 2px solid #1a237e; }
-        .radio-cell { text-align: center; }
-        button { display: block; width: 100%; padding: 15px; background: #1a237e; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        button:hover { background: #303f9f; }
-        #results { display: none; margin-top: 40px; }
-        .charts-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
-        canvas { max-width: 100%; height: 400px !important; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .block { border: 1px solid #ccc; margin-bottom: 20px; border-radius: 8px; overflow: hidden; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; border-bottom: 1px solid #eee; padding: 10px; align-items: center; }
+        .header { background: #1a237e; color: white; font-weight: bold; }
+        .charts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; }
+        canvas { background: #fff; border: 1px solid #ddd; height: 300px !important; }
+        button { width: 100%; padding: 20px; background: #2e7d32; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>Профиль Личности (PPA)</h1>
-    <div class="instruction">
-        В каждой строке выберите <b>одно</b> слово, которое лучше всего вас описывает (Б — наиболее), 
-        и <b>одно</b> слово, которое описывает вас меньше всего (М — наименее).
+    <div id="q-page">
+        <h2 style="text-align:center">Анкета PPA</h2>
+        <div class="row header"><div>Слова</div><div>Б</div><div>М</div></div>
+        <div id="form"></div>
+        <button onclick="calc()">Результат</button>
     </div>
-
-    <div id="test-form">
-        <div class="test-row header-row">
-            <div>Список слов</div>
-            <div class="radio-cell">Наиболее (Б)</div>
-            <div class="radio-cell">Наименее (М)</div>
-        </div>
-        <div id="questions-container"></div>
-        <button onclick="processTest()">Получить результаты</button>
-    </div>
-
-    <div id="results">
-        <h2>Ваш отчет</h2>
-        <div class="charts-grid">
-            <div>
-                <h3>График III: Автопортрет</h3>
-                <canvas id="chartG3"></canvas>
-            </div>
+    <div id="r-page" style="display:none">
+        <div class="charts">
+            <div><p>Работа</p><canvas id="c1"></canvas></div>
+            <div><p>Давление</p><canvas id="c2"></canvas></div>
+            <div><p>Автопортрет</p><canvas id="c3"></canvas></div>
         </div>
     </div>
 </div>
-
 <script>
-const lookupTable = {
-    1: {"Мягкий":{G1:"S",G2:"I"},"Убеждающий":{G1:"Mask",G2:"S"},"Скромный":{G1:"C",G2:"D"},"Оригинальный":{G1:"D",G2:"C"}},
-    2: {"Привлекательный":{G1:"I",G2:"C"},"Обязательный":{G1:"Mask",G2:"D"},"Упорный":{G1:"D",G2:"S"},"Милый":{G1:"Mask",G2:"Mask"}},
-    3: {"Управляемый":{G1:"C",G2:"D"},"Смелый":{G1:"D",G2:"S"},"Верный":{G1:"S",G2:"I"},"Обворожительный":{G1:"I",G2:"C"}},
-    4: {"Прогрессивный":{G1:"D",G2:"S"},"Любезный":{G1:"S",G2:"I"},"Волевой":{G1:"D",G2:"S"},"Веселый":{G1:"I",G2:"C"}},
-    5: {"Жизнерадостный":{G1:"I",G2:"C"},"Точный":{G1:"C",G2:"D"},"Отважный":{G1:"D",G2:"S"},"Уравновешенный":{G1:"S",G2:"I"}},
-    6: {"Соперничающий":{G1:"D",G2:"S"},"Тактичный":{G1:"C",G2:"D"},"Счастливый":{G1:"I",G2:"C"},"Гармоничный":{G1:"S",G2:"Mask"}},
-    7: {"Суетливый":{G1:"C",G2:"S"},"Послушный":{G1:"S",G2:"I"},"Непобедимый":{G1:"D",G2:"S"},"Игривый":{G1:"I",G2:"C"}},
-    8: {"Храбрый":{G1:"D",G2:"S"},"Воодушевляющий":{G1:"I",G2:"C"},"Покорный":{G1:"C",G2:"D"},"Застенчивый":{G1:"C",G2:"D"}},
-    9: {"Общительный":{G1:"I",G2:"C"},"Терпеливый":{G1:"S",G2:"I"},"Самоуверенный":{G1:"D",G2:"S"},"Учтивый":{G1:"C",G2:"D"}},
-    10: {"Предприимчивый":{G1:"D",G2:"S"},"Восприимчивый":{G1:"S",G2:"I"},"Искренний":{G1:"S",G2:"Mask"},"Воздержанный":{G1:"C",G2:"I"}},
-    11: {"Разговорчивый":{G1:"I",G2:"C"},"Самоуправляемый":{G1:"Mask",G2:"Mask"},"Законопослушный":{G1:"C",G2:"D"},"Решительный":{G1:"D",G2:"S"}},
-    12: {"Утонченный":{G1:"C",G2:"D"},"Смелый":{G1:"D",G2:"S"},"Дипломатичный":{G1:"C",G2:"D"},"Довольный":{G1:"S",G2:"I"}},
-    13: {"Агрессивный":{G1:"D",G2:"S"},
+const data = {
+    1:{"Мягкий":["S","I"],"Убеждающий":["Mask","S"],"Скромный":["C","D"],"Оригинальный":["D","C"]},
+    2:{"Привлекательный":["I","C"],"Обязательный":["Mask","D"],"Упорный":["D","S"],"Милый":["Mask","Mask"]},
+    3:{"Управляемый":["C","D"],"Смелый":["D","S"],"Верный":["S","I"],"Обворожительный":["I","C"]},
+    4:{"Прогрессивный":["D","S"],"Любезный":["S","I"],"Волевой":["D","S"],"Веселый":["I","C"]},
+    5:{"Жизнерадостный":["I","C"],"Точный":["C","D"],"Отважный":["D","S"],"Уравновешенный":["S","I"]},
+    6:{"Соперничающий":["D","S"],"Тактичный":["C","D"],"Счастливый":["I","C"],"Гармоничный":["S","Mask"]},
+    7:{"Суетливый":["C","S"],"Послушный":["S","I"],"Непобедимый":["D","S"],"Игривый":["I","C"]},
+    8:{"Храбрый":["D","S"],"Воодушевляющий":["I","C"],"Покорный":["C","D"],"Застенчивый":["C","D"]},
+    9:{"Общительный":["I","C"],"Терпеливый":["S","I"],"Самоуверенный":["D","S"],"Учтивый":["C","D"]},
+    10:{"Предприимчивый":["D","S"],"Восприимчивый":["S","I"],"Искренний":["S","Mask"],"Воздержанный":["C","I"]},
+    11:{"Разговорчивый":["I","C"],"Самоуправляемый":["Mask","Mask"],"Законопослушный":["C","D"],"Решительный":["D","S"]},
+    12:{"Утонченный":["C","D"],"Смелый":["D","S"],"Дипломатичный":["C","D"],"Довольный":["S","I"]},
+    13:{"Агрессивный":["D","S"],"Душа общества":["I","C"],"Безотказный":["Mask","Mask"],"Боязливый":["C","D"]},
+    14:{"Осторожный":["C","D"],"Непреклонный":["D","S"],"Убедительный":["Mask","S"],"Добродушный":["S","I"]},
+    15:{"Целеустремленный":["S","S"],"Стремящийся":["D","S"],"Соглашающийся":["S","D"],"Неунывающий":["I","C"]},
+    16:{"Уверенный":["D","S"],"Сочувствующий":["S","I"],"Терпимый":["C","D"],"Напористый":["D","S"]},
+    17:{"Дисциплинированный":["C","D"],"Щедрый":["Mask","Mask"],"Подвижный":["I","C"],"Настойчивый":["D","S"]},
+    18:{"Восхитительный":["I","C"],"Добрый":["S","I"],"Безропотный":["S","D"],"Волевой":["Mask","S"]},
+    19:{"Уважительный":["C","D"],"Лидирующий":["D","C"],"Оптимистичный":["I","C"],"Уживчивый":["Mask","Mask"]},
+    20:{"Аргументирующий":["Mask","S"],"Адаптирующийся":["S","C"],"Безразличный":["C","S"],"Беззаботный":["I","C"]},
+    21:{"Доверчивый":["S","C"],"Довольный":["S","I"],"Позитивный":["I","C"],"Мирный":["S","D"]},
+    22:{"Компанейский":["I","C"],"Культурный":["C","D"],"Энергичный":["I","C"],"Снисходительный":["S","D"]},
+    23:{"Общительный":["Mask","C"],"Аккуратный":["C","D"],"Прямолинейный":["D","S"],"Сдержанный":["S","I"]},
+    24:{"Неугомонный":["D","I"],"Добрососедский":["Mask","Mask"],"Популярный":["I","C"],"Преданный":["S","Mask"]}
+};
+const f = document.getElementById('form');
+for (let i=1; i<=24; i++) {
+    let html = `<div class="block">`;
+    Object.keys(data[i]).forEach(w => {
+        html += `<div class="row"><div>${w}</div>
+        <input type="radio" name="m${i}" value="${w}">
+        <input type="radio" name="l${i}" value="${w}"></div>`;
+    });
+    f.innerHTML += html + `</div>`;
+}
+function calc() {
+    let g1={D:0,I:0,S:0,C:0}, g2={D:0,I:0,S:0,C:0};
+    for(let i=1;i<=24;i++){
+        let mv=document.querySelector(`input[name="m${i}"]:checked`)?.value;
+        let lv=document.querySelector(`input[name="l${i}"]:checked`)?.value;
+        if(!mv || !lv) { alert('Заполните ряд '+i); return; }
+        if(data[i][mv][0]!=='Mask') g1[data[i][mv][0]]++;
+        if(data[i][lv][1]!=='Mask') g2[data[i][lv][1]]++;
+    }
+    document.getElementById('q-page').style.display='none';
+    document.getElementById('r-page').style.display='block';
+    const chart = (id, sc, min, max) => {
+        new Chart(document.getElementById(id), {
+            type:'line', data:{labels:['D','I','S','C'], datasets:[{data:[sc.D,sc.I,sc.S,sc.C],borderColor:'#1a237e'}]},
+            options:{scales:{y:{min:min,max:max}}}
+        });
+    };
+    chart('c1', g1, 0, 15); chart('c2', g2, 0, 15);
+    chart('c3', {D:g1.D-g2.D,I:g1.I-g2.I,S:g1.S-g2.S,C:g1.C-g2.C}, -10, 15);
+}
+</script>
+</body>
+</html>
