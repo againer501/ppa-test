@@ -2,90 +2,100 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Thomas PPA System</title>
+    <title>Thomas PPA DISC</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .block { border: 1px solid #ddd; border-radius: 8px; margin-bottom: 25px; background: #fff; }
-        .block-title { background: #f8f9fa; padding: 8px 15px; font-weight: bold; border-bottom: 1px solid #ddd; color: #1a237e; }
-        .header { background: #1a237e; color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 12px; border-bottom: 1px solid #eee; align-items: center; }
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .block { border: 1px solid #e0e0e0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; }
+        .block-title { background: #e8eaf6; padding: 10px; font-weight: bold; color: #1a237e; border-bottom: 1px solid #e0e0e0; }
+        .header { background: #1a237e; color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 100; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 10px; border-bottom: 1px solid #f0f0f0; align-items: center; }
+        .row:hover { background: #fcfcfc; }
         .radio-cell { text-align: center; }
-        button { width: 100%; padding: 20px; background: #2e7d32; color: white; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; font-weight: bold; }
+        input[type="radio"] { width: 18px; height: 18px; cursor: pointer; }
+        button { width: 100%; padding: 20px; background: #2e7d32; color: white; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #1b5e20; }
         #results { display: none; margin-top: 30px; }
         .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .chart-card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; }
+        .chart-card { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="quiz">
-        <h1 style="text-align:center; color: #1a237e;">Анкета PPA</h1>
-        <div class="header"><div>Слова</div><div>Б</div><div>М</div></div>
-        <div id="manual-form">
-            <div class="block"><div class="block-title">Группа 1</div>
-                <div class="row"><div>Мягкий</div><div class="radio-cell"><input type="radio" name="m0" value="Мягкий"></div><div class="radio-cell"><input type="radio" name="l0" value="Мягкий"></div></div>
-                <div class="row"><div>Убеждающий</div><div class="radio-cell"><input type="radio" name="m0" value="Убеждающий"></div><div class="radio-cell"><input type="radio" name="l0" value="Убеждающий"></div></div>
-                <div class="row"><div>Скромный</div><div class="radio-cell"><input type="radio" name="m0" value="Скромный"></div><div class="radio-cell"><input type="radio" name="l0" value="Скромный"></div></div>
-                <div class="row"><div>Оригинальный</div><div class="radio-cell"><input type="radio" name="m0" value="Оригинальный"></div><div class="radio-cell"><input type="radio" name="l0" value="Оригинальный"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 2</div>
-                <div class="row"><div>Привлекательный</div><div class="radio-cell"><input type="radio" name="m1" value="Привлекательный"></div><div class="radio-cell"><input type="radio" name="l1" value="Привлекательный"></div></div>
-                <div class="row"><div>Обязательный</div><div class="radio-cell"><input type="radio" name="m1" value="Обязательный"></div><div class="radio-cell"><input type="radio" name="l1" value="Обязательный"></div></div>
-                <div class="row"><div>Упорный</div><div class="radio-cell"><input type="radio" name="m1" value="Упорный"></div><div class="radio-cell"><input type="radio" name="l1" value="Упорный"></div></div>
-                <div class="row"><div>Милый</div><div class="radio-cell"><input type="radio" name="m1" value="Милый"></div><div class="radio-cell"><input type="radio" name="l1" value="Милый"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 3</div>
-                <div class="row"><div>Управляемый</div><div class="radio-cell"><input type="radio" name="m2" value="Управляемый"></div><div class="radio-cell"><input type="radio" name="l2" value="Управляемый"></div></div>
-                <div class="row"><div>Смелый</div><div class="radio-cell"><input type="radio" name="m2" value="Смелый"></div><div class="radio-cell"><input type="radio" name="l2" value="Смелый"></div></div>
-                <div class="row"><div>Верный</div><div class="radio-cell"><input type="radio" name="m2" value="Верный"></div><div class="radio-cell"><input type="radio" name="l2" value="Верный"></div></div>
-                <div class="row"><div>Обворожительный</div><div class="radio-cell"><input type="radio" name="m2" value="Обворожительный"></div><div class="radio-cell"><input type="radio" name="l2" value="Обворожительный"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 4</div>
-                <div class="row"><div>Прогрессивный</div><div class="radio-cell"><input type="radio" name="m3" value="Прогрессивный"></div><div class="radio-cell"><input type="radio" name="l3" value="Прогрессивный"></div></div>
-                <div class="row"><div>Любезный</div><div class="radio-cell"><input type="radio" name="m3" value="Любезный"></div><div class="radio-cell"><input type="radio" name="l3" value="Любезный"></div></div>
-                <div class="row"><div>Волевой</div><div class="radio-cell"><input type="radio" name="m3" value="Волевой"></div><div class="radio-cell"><input type="radio" name="l3" value="Волевой"></div></div>
-                <div class="row"><div>Веселый</div><div class="radio-cell"><input type="radio" name="m3" value="Веселый"></div><div class="radio-cell"><input type="radio" name="l3" value="Веселый"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 5</div>
-                <div class="row"><div>Жизнерадостный</div><div class="radio-cell"><input type="radio" name="m4" value="Жизнерадостный"></div><div class="radio-cell"><input type="radio" name="l4" value="Жизнерадостный"></div></div>
-                <div class="row"><div>Точный</div><div class="radio-cell"><input type="radio" name="m4" value="Точный"></div><div class="radio-cell"><input type="radio" name="l4" value="Точный"></div></div>
-                <div class="row"><div>Отважный</div><div class="radio-cell"><input type="radio" name="m4" value="Отважный"></div><div class="radio-cell"><input type="radio" name="l4" value="Отважный"></div></div>
-                <div class="row"><div>Уравновешенный</div><div class="radio-cell"><input type="radio" name="m4" value="Уравновешенный"></div><div class="radio-cell"><input type="radio" name="l4" value="Уравновешенный"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 6</div>
-                <div class="row"><div>Соперничающий</div><div class="radio-cell"><input type="radio" name="m5" value="Соперничающий"></div><div class="radio-cell"><input type="radio" name="l5" value="Соперничающий"></div></div>
-                <div class="row"><div>Тактичный</div><div class="radio-cell"><input type="radio" name="m5" value="Тактичный"></div><div class="radio-cell"><input type="radio" name="l5" value="Тактичный"></div></div>
-                <div class="row"><div>Счастливый</div><div class="radio-cell"><input type="radio" name="m5" value="Счастливый"></div><div class="radio-cell"><input type="radio" name="l5" value="Счастливый"></div></div>
-                <div class="row"><div>Гармоничный</div><div class="radio-cell"><input type="radio" name="m5" value="Гармоничный"></div><div class="radio-cell"><input type="radio" name="l5" value="Гармоничный"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 7</div>
-                <div class="row"><div>Суетливый</div><div class="radio-cell"><input type="radio" name="m6" value="Суетливый"></div><div class="radio-cell"><input type="radio" name="l6" value="Суетливый"></div></div>
-                <div class="row"><div>Послушный</div><div class="radio-cell"><input type="radio" name="m6" value="Послушный"></div><div class="radio-cell"><input type="radio" name="l6" value="Послушный"></div></div>
-                <div class="row"><div>Непобедимый</div><div class="radio-cell"><input type="radio" name="m6" value="Непобедимый"></div><div class="radio-cell"><input type="radio" name="l6" value="Непобедимый"></div></div>
-                <div class="row"><div>Игривый</div><div class="radio-cell"><input type="radio" name="m6" value="Игривый"></div><div class="radio-cell"><input type="radio" name="l6" value="Игривый"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 8</div>
-                <div class="row"><div>Храбрый</div><div class="radio-cell"><input type="radio" name="m7" value="Храбрый"></div><div class="radio-cell"><input type="radio" name="l7" value="Храбрый"></div></div>
-                <div class="row"><div>Воодушевляющий</div><div class="radio-cell"><input type="radio" name="m7" value="Воодушевляющий"></div><div class="radio-cell"><input type="radio" name="l7" value="Воодушевляющий"></div></div>
-                <div class="row"><div>Покорный</div><div class="radio-cell"><input type="radio" name="m7" value="Покорный"></div><div class="radio-cell"><input type="radio" name="l7" value="Покорный"></div></div>
-                <div class="row"><div>Застенчивый</div><div class="radio-cell"><input type="radio" name="m7" value="Застенчивый"></div><div class="radio-cell"><input type="radio" name="l7" value="Застенчивый"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 9</div>
-                <div class="row"><div>Общительный</div><div class="radio-cell"><input type="radio" name="m8" value="Общительный"></div><div class="radio-cell"><input type="radio" name="l8" value="Общительный"></div></div>
-                <div class="row"><div>Терпеливый</div><div class="radio-cell"><input type="radio" name="m8" value="Терпеливый"></div><div class="radio-cell"><input type="radio" name="l8" value="Терпеливый"></div></div>
-                <div class="row"><div>Самоуверенный</div><div class="radio-cell"><input type="radio" name="m8" value="Самоуверенный"></div><div class="radio-cell"><input type="radio" name="l8" value="Самоуверенный"></div></div>
-                <div class="row"><div>Учтивый</div><div class="radio-cell"><input type="radio" name="m8" value="Учтивый"></div><div class="radio-cell"><input type="radio" name="l8" value="Учтивый"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 10</div>
-                <div class="row"><div>Предприимчивый</div><div class="radio-cell"><input type="radio" name="m9" value="Предприимчивый"></div><div class="radio-cell"><input type="radio" name="l9" value="Предприимчивый"></div></div>
-                <div class="row"><div>Восприимчивый</div><div class="radio-cell"><input type="radio" name="m9" value="Восприимчивый"></div><div class="radio-cell"><input type="radio" name="l9" value="Восприимчивый"></div></div>
-                <div class="row"><div>Искренний</div><div class="radio-cell"><input type="radio" name="m9" value="Искренний"></div><div class="radio-cell"><input type="radio" name="l9" value="Искренний"></div></div>
-                <div class="row"><div>Воздержанный</div><div class="radio-cell"><input type="radio" name="m9" value="Воздержанный"></div><div class="radio-cell"><input type="radio" name="l9" value="Воздержанный"></div></div>
-            </div>
-            <div class="block"><div class="block-title">Группа 11</div>
-                <div class="row"><div>Разговорчивый</div><div class="radio-cell"><input type="radio" name="m10" value="Разговорчивый"></div><div class="radio-cell"><input type="radio" name="l10" value="Разговорчивый"></div></div>
-                <div class="row"><div>Самоуправляемый</div><div class="radio-cell"><input type="radio" name="m10" value="Самоуправляемый"></div><div class="radio-cell"><input type="radio" name="l10" value="Самоуправляемый"></div></div>
-                <div class="row"><div>Законопослушный</div><div class="radio-cell"><input type="radio" name="m10" value="Законопослушный"></div><div class="radio-cell"><input type="radio" name
+        <h1 style="text-align:center; color: #1a237e;">Анкета PPA (24 группы)</h1>
+        <p style="text-align:center; color: #666;">Выберите в каждой группе ОДНО слово "Наиболее" (Б) и ОДНО слово "Наименее" (М)</p>
+        <div class="header"><div>Список слов</div><div>Б (Наиболее)</div><div>М (Наименее)</div></div>
+        <div id="ppa-form"></div>
+        <button onclick="calculateDISC()">СГЕНЕРИРОВАТЬ ГРАФИКИ</button>
+    </div>
+
+    <div id="results">
+        <h2 style="text-align:center; color: #1a237e;">Ваш профиль DISC</h2>
+        <div class="charts-grid">
+            <div class="chart-card"><canvas id="g1"></canvas><p>I: Поведение на работе</p></div>
+            <div class="chart-card"><canvas id="g2"></canvas><p>II: Поведение под давлением</p></div>
+            <div class="chart-card"><canvas id="g3"></canvas><p>III: Автопортрет</p></div>
+        </div>
+        <button onclick="window.print()" style="background: #1a237e;">СОХРАНИТЬ В PDF</button>
+        <p style="text-align:center;"><a href="javascript:location.reload()">Сбросить анкету</a></p>
+    </div>
+</div>
+
+<script>
+// Полная база данных слов и ключей
+const data = [
+    ["Мягкий","Убеждающий","Скромный","Оригинальный"],["Привлекательный","Обязательный","Упорный","Милый"],
+    ["Управляемый","Смелый","Верный","Обворожительный"],["Прогрессивный","Любезный","Волевой","Веселый"],
+    ["Жизнерадостный","Точный","Отважный","Уравновешенный"],["Соперничающий","Тактичный","Счастливый","Гармоничный"],
+    ["Суетливый","Послушный","Непобедимый","Игривый"],["Храбрый","Воодушевляющий","Покорный","Застенчивый"],
+    ["Общительный","Терпеливый","Самоуверенный","Учтивый"],["Предприимчивый","Восприимчивый","Искренний","Воздержанный"],
+    ["Разговорчивый","Самоуправляемый","Законопослушный","Решительный"],["Утонченный","Смелый","Дипломатичный","Довольный"],
+    ["Агрессивный","Душа общества","Безотказный","Боязливый"],["Осторожный","Непреклонный","Убедительный","Добродушный"],
+    ["Целеустремленный","Стремящийся","Соглашающийся","Неунывающий"],["Уверенный","Сочувствующий","Терпимый","Напористый"],
+    ["Дисциплинированный","Щедрый","Подвижный","Настойчивый"],["Восхитительный","Добрый","Безропотный","Волевой"],
+    ["Уважительный","Лидирующий","Оптимистичный","Уживчивый"],["Аргументирующий","Адаптирующийся","Безразличный","Беззаботный"],
+    ["Доверчивый","Довольный","Позитивный","Мирный"],["Компанейский","Культурный","Энергичный","Снисходительный"],
+    ["Общительный","Аккуратный","Прямолинейный","Сдержанный"],["Неугомонный","Добрососедский","Популярный","Преданный"]
+];
+
+const keys = {"Мягкий":["S","I"],"Убеждающий":["Mask","S"],"Скромный":["C","D"],"Оригинальный":["D","C"],"Привлекательный":["I","C"],"Обязательный":["Mask","D"],"Упорный":["D","S"],"Милый":["Mask","Mask"],"Управляемый":["C","D"],"Смелый":["D","S"],"Верный":["S","I"],"Обворожительный":["I","C"],"Прогрессивный":["D","S"],"Любезный":["S","I"],"Волевой":["D","S"],"Веселый":["I","C"],"Жизнерадостный":["I","C"],"Точный":["C","D"],"Отважный":["D","S"],"Уравновешенный":["S","I"],"Соперничающий":["D","S"],"Тактичный":["C","D"],"Счастливый":["I","C"],"Гармоничный":["S","Mask"],"Суетливый":["C","S"],"Послушный":["S","I"],"Непобедимый":["D","S"],"Игривый":["I","C"],"Храбрый":["D","S"],"Воодушевляющий":["I","C"],"Покорный":["C","D"],"Застенчивый":["C","D"],"Общительный":["I","C"],"Терпеливый":["S","I"],"Самоуверенный":["D","S"],"Учтивый":["C","D"],"Предприимчивый":["D","S"],"Восприимчивый":["S","I"],"Искренний":["S","Mask"],"Воздержанный":["C","I"],"Разговорчивый":["I","C"],"Самоуправляемый":["Mask","Mask"],"Законопослушный":["C","D"],"Решительный":["D","S"],"Утонченный":["C","D"],"Смелый":["D","S"],"Дипломатичный":["C","D"],"Довольный":["S","I"],"Агрессивный":["D","S"],"Душа общества":["I","C"],"Безотказный":["Mask","Mask"],"Боязливый":["C","D"],"Осторожный":["C","D"],"Непреклонный":["D","S"],"Убедительный":["Mask","S"],"Добродушный":["S","I"],"Целеустремленный":["S","S"],"Стремящийся":["D","S"],"Соглашающийся":["S","D"],"Неунывающий":["I","C"],"Уверенный":["D","S"],"Сочувствующий":["S","I"],"Терпимый":["C","D"],"Напористый":["D","S"],"Дисциплинированный":["C","D"],"Щедрый":["Mask","Mask"],"Подвижный":["I","C"],"Настойчивый":["D","S"],"Восхитительный":["I","C"],"Добрый":["S","I"],"Безропотный":["S","D"],"Волевой":["Mask","S"],"Уважительный":["C","D"],"Лидирующий":["D","C"],"Оптимистичный":["I","C"],"Уживчивый":["Mask","Mask"],"Аргументирующий":["Mask","S"],"Адаптирующийся":["S","C"],"Безразличный":["C","S"],"Беззаботный":["I","C"],"Доверчивый":["S","C"],"Довольный":["S","I"],"Позитивный":["I","C"],"Мирный":["S","D"],"Компанейский":["I","C"],"Культурный":["C","D"],"Энергичный":["I","C"],"Снисходительный":["S","D"],"Общительный":["Mask","C"],"Аккуратный":["C","D"],"Прямолинейный":["D","S"],"Сдержанный":["S","I"],"Неугомонный":["D","I"],"Добрососедский":["Mask","Mask"],"Популярный":["I","C"],"Преданный":["S","Mask"]};
+
+// Отрисовка формы
+const form = document.getElementById('ppa-form');
+data.forEach((group, i) => {
+    let html = `<div class="block"><div class="block-title">Группа ${i+1}</div>`;
+    group.forEach(word => {
+        html += `<div class="row"><div>${word}</div>
+        <div class="radio-cell"><input type="radio" name="m${i}" value="${word}"></div>
+        <div class="radio-cell"><input type="radio" name="l${i}" value="${word}"></div></div>`;
+    });
+    form.innerHTML += html + `</div>`;
+});
+
+function calculateDISC() {
+    let g1={D:0,I:0,S:0,C:0}, g2={D:0,I:0,S:0,C:0};
+    for(let i=0; i<24; i++) {
+        let m = document.querySelector(`input[name="m${i}"]:checked`)?.value;
+        let l = document.querySelector(`input[name="l${i}"]:checked`)?.value;
+        if(!m || !l) return alert("Заполните группу " + (i+1));
+        if(m === l) return alert("Ошибка в группе " + (i+1) + ": нельзя выбрать одно слово и в Б, и в М.");
+        if(keys[m][0]!=="Mask") g1[keys[m][0]]++;
+        if(keys[l][1]!=="Mask") g2[keys[l][1]]++;
+    }
+    document.getElementById('quiz').style.display='none';
+    document.getElementById('results').style.display='block';
+    const draw = (id, sc, min, max) => {
+        new Chart(document.getElementById(id), {
+            type:'line', data:{labels:['D','I','S','C'], datasets:[{label:'Баллы', data:[sc.D,sc.I,sc.S,sc.C], borderColor:'#1a237e', backgroundColor:'#1a237e', tension:0.1, fill:false}]},
+            options:{scales:{y:{min, max, grid:{color:'#e0e0e0'}}}}
+        });
+    };
+    draw('g1', g1, 0, 15); draw('g2', g2, 0, 15);
+    draw('g3', {D:g1.D-g2.D, I:g1.I-g2.I, S:g1.S-g2.S, C:g1.C-g2.C}, -10, 15);
+}
+</script>
+</body>
+</html>
