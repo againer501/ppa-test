@@ -66,15 +66,20 @@
             <div class="section-subtitle">Добро пожаловать</div>
             <div class="instr-content">
                 <p>Профильный Анализ Личности создан для определения предпочитаемого человеком стиля поведения в рабочей среде.</p>
-                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах.</p>
-                <p>Первый ответ, который приходит в голову, обычно самый точный. Отвечайте спонтанно.</p>
-                <p>Думайте о себе <u>на текущей работе</u>.</p>
+                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах в работе и дают полезную информацию, которая поможет Вам лучше соответствовать требованиям рабочей среды.</p>
+                <p>Первый ответ, который приходит Вам в голову, как правило, является самым точным. Анкету необходимо заполнять в одиночестве и не отвлекаясь. Постарайтесь отвечать спонтанно и честно.</p>
+                <p>При заполнении анкеты Профильного Анализа Личности <u>думайте о себе на текущей работе</u>; если Вы в данный момент не работаете, думайте о себе на последнем месте работы. Если Вы никогда не работали, то - о себе дома.</p>
+                
                 <div class="section-subtitle" style="margin-top: 15px;">Инструкция</div>
+                <p>Каждая часть оценки содержит два ряда по четыре описательных слова.</p>
                 <ul class="instr-list">
-                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас.</li>
-                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас.</li>
+                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас, нажав на него.</li>
+                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас, нажав на слово.</li>
+                    <li data-step="3.">Вы автоматически перейдете к следующему вопросу. Повторяйте шаги 1 и 2 пока не дадите ответы на все вопросы.</li>
                 </ul>
-                <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
+                <div style="margin-top: 15px;">
+                    <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
+                </div>
             </div>
         </section>
 
@@ -102,6 +107,7 @@
             <div class="section-subtitle">Спасибо за заполнение опросника!</div>
             <p class="instr-content">Данные успешно отправлены администратору. Теперь вы можете закрыть эту страницу.</p>
         </section>
+
         <div class="footer">Copyright © 2002-2026 Thomas International Ltd</div>
     </div>
 
@@ -135,7 +141,7 @@
         }
 
         function startQuiz() { 
-            startTime = new Date(); // Засекаем время начала
+            startTime = new Date(); 
             showView('view-quiz'); 
             renderStep(); 
         }
@@ -173,36 +179,25 @@
 
         function submitFinal() {
             saveStep();
-            const endTime = new Date();
-            const timeDiff = Math.floor((endTime - startTime) / 1000);
+            const timeDiff = Math.floor((new Date() - startTime) / 1000);
             const minutes = Math.floor(timeDiff / 60);
             const seconds = timeDiff % 60;
-
-            const name = document.getElementById('f-name').value + " " + document.getElementById('l-name').value;
-            const email = document.getElementById('u-email').value;
-            const company = document.getElementById('comp').value || "Не указана";
-            const position = document.getElementById('pos').value || "Не указана";
             
             const formData = {
                 "access_key": "7594f570-4bf5-4cc7-96e3-63dd58f6b3ae",
-                "subject": "Результаты Thomas PPA: " + name,
-                "from_name": "Thomas Online System",
-                "Кандидат": name,
-                "Email": email,
-                "Компания": company,
-                "Должность": position,
+                "subject": "Результаты Thomas PPA: " + document.getElementById('f-name').value + " " + document.getElementById('l-name').value,
+                "Кандидат": document.getElementById('f-name').value + " " + document.getElementById('l-name').value,
+                "Email": document.getElementById('u-email').value,
+                "Компания": document.getElementById('comp').value || "Не указана",
                 "Затраченное время": `${minutes} мин. ${seconds} сек.`,
-                "ОТЧЕТ (24 Группы)": "\n" + results.join('\n')
+                "ОТЧЕТ": "\n" + results.join('\n')
             };
 
             fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(formData)
-            })
-            .finally(() => {
-                showView('view-final');
-            });
+            }).finally(() => { showView('view-final'); });
         }
     </script>
 </body>
