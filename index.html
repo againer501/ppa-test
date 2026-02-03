@@ -15,10 +15,9 @@
         .container { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; }
         .pp-logo { position: absolute; right: 40px; top: 0; font-size: 50px; color: var(--thomas-blue); opacity: 0.8; }
         
-        /* ШРИФТЫ: Оптимальный баланс */
         .page-title { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .section-subtitle { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--thomas-blue); }
-        .instr-content { font-size: 13.5px; line-height: 1.5; color: var(--thomas-blue); max-width: 850px; }
+        .instr-content { font-size: 13.5px; line-height: 1.5; color: var(--thomas-blue); max-width: 900px; }
         .instr-list { list-style: none; padding-left: 25px; margin: 15px 0; font-size: 13.5px; }
         .instr-list li { margin-bottom: 8px; position: relative; }
         .instr-list li::before { content: attr(data-step); position: absolute; left: -25px; font-weight: bold; }
@@ -27,12 +26,11 @@
         .form-group { display: flex; align-items: center; margin-bottom: 10px; font-size: 13px; }
         .form-group label { width: 120px; text-align: right; margin-right: 15px; font-weight: bold; }
         .form-group input, .form-group select { width: 220px; padding: 6px; border: 1px solid #ccc; font-size: 13px; border-radius: 3px; }
-        .mandatory { color: red; }
 
         .btn-thomas { 
             background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
-            border: 1px solid #ababab; border-radius: 15px; 
-            padding: 7px 25px; cursor: pointer; font-size: 13px; color: #333; font-weight: bold;
+            border: 1px solid #ababab; border-radius: 15px; padding: 7px 30px; 
+            cursor: pointer; font-size: 13px; color: #333; font-weight: bold;
         }
         .btn-thomas:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -45,7 +43,7 @@
         .words-wrapper { display: grid; grid-template-columns: repeat(4, 150px); background: #E8F1F8; padding: 15px; border-radius: 6px; }
         .word-cell { text-align: center; }
         .word-cell label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
-        .word-cell input[type="radio"] { transform: scale(1.2); }
+        .word-cell input[type="radio"] { transform: scale(1.2); cursor: pointer; }
 
         .view { display: none; } .active { display: block; }
         .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid #eee; font-size: 11px; color: #888; }
@@ -64,14 +62,14 @@
             <div class="section-subtitle">Персональные данные</div>
             <div class="form-grid">
                 <div>
-                    <div class="form-group"><label>Имя <span class="mandatory">*</span></label><input type="text" id="f-name" oninput="checkForm()"></div>
-                    <div class="form-group"><label>Фамилия <span class="mandatory">*</span></label><input type="text" id="l-name" oninput="checkForm()"></div>
-                    <div class="form-group"><label>Email <span class="mandatory">*</span></label><input type="email" id="u-email" oninput="checkForm()"></div>
+                    <div class="form-group"><label>Имя *</label><input type="text" id="f-name" oninput="checkForm()"></div>
+                    <div class="form-group"><label>Фамилия *</label><input type="text" id="l-name" oninput="checkForm()"></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="u-email" oninput="checkForm()"></div>
                 </div>
                 <div>
                     <div class="form-group"><label>Компания</label><input type="text" id="comp"></div>
                     <div class="form-group"><label>Должность</label><input type="text" id="pos"></div>
-                    <div class="form-group"><label>Страна <span class="mandatory">*</span></label>
+                    <div class="form-group"><label>Страна *</label>
                         <select id="country" onchange="checkForm()"><option value="Uzbekistan" selected>Uzbekistan</option></select>
                     </div>
                 </div>
@@ -95,8 +93,8 @@
                     <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас, нажав на слово.</li>
                     <li data-step="3.">Вы автоматически перейдете к следующему вопросу. Повторяйте шаги 1 и 2 пока не дадите ответы на все вопросы.</li>
                 </ul>
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <span style="font-size: 12px; color: #666;">Язык отображения: Russian (Russia)</span>
+                <div style="margin-top: 15px; display: flex; align-items: center; gap: 20px;">
+                    <span style="font-size: 11px; color: #777;">Язык отображения: Russian (Russia)</span>
                     <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
                 </div>
             </div>
@@ -129,8 +127,8 @@
         </section>
 
         <section id="view-final" class="view">
-            <div class="page-title">Завершено</div>
-            <p class="instr-content">Данные отправлены администратору. Если вы делаете это впервые, проверьте почту <b>againer@yandex.ru</b> для активации отчетов.</p>
+            <div class="page-title">Анкета завершена</div>
+            <p class="instr-content">Спасибо за уделенное время! Результаты отправлены администратору на <b>againer@yandex.ru</b>.</p>
         </section>
 
         <div class="footer">Copyright © 2002-2026 Thomas International Ltd</div>
@@ -162,6 +160,7 @@
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
         }
 
         function startQuiz() { showView('view-quiz'); renderStep(); }
@@ -193,7 +192,7 @@
         function saveStep() {
             const m = document.querySelector('input[name="most"]:checked');
             const l = document.querySelector('input[name="least"]:checked');
-            if (m && l) results[currentStep] = `№${currentStep+1}: M:${m.value}, L:${l.value}`;
+            if (m && l) results[currentStep] = `Группа ${currentStep+1}: НАИБОЛЕЕ: ${m.value}, НАИМЕНЕЕ: ${l.value}`;
         }
 
         function submitFinal() {
