@@ -5,51 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thomas PPA System - Official Version</title>
     <style>
-        :root { --thomas-blue: #004080; --thomas-green: #8DC53F; }
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: var(--thomas-blue); background: #fff; }
-        .header { padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
-        .logo-text { font-size: 26px; font-weight: bold; color: #333; }
-        .divider { height: 8px; background-color: var(--thomas-green); margin-bottom: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; }
-        .pp-logo { position: absolute; right: 40px; top: 0; font-size: 60px; color: var(--thomas-blue); font-family: serif; opacity: 0.8; }
+        :root { 
+            --thomas-blue: #004080; 
+            --thomas-green: #8DC53F; 
+            --thomas-light-green: #DFEDC4;
+        }
         
-        .page-title { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-        .section-subtitle { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: var(--thomas-blue); }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: var(--thomas-blue); background: #fff; line-height: 1.4; }
         
-        /* Текст инструкции */
-        .instr-content { font-size: 11px; line-height: 1.5; color: var(--thomas-blue); max-width: 700px; }
-        .instr-content p { margin-bottom: 12px; }
-        .instr-list { list-style: none; padding-left: 25px; margin: 15px 0; }
-        .instr-list li { margin-bottom: 10px; position: relative; }
-        .instr-list li::before { content: attr(data-step); position: absolute; left: -25px; font-weight: bold; }
+        /* Header & Logo */
+        .header { padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; }
+        .logo-text { font-size: 28px; font-weight: bold; color: #333; letter-spacing: -1px; }
+        .divider { height: 10px; background-color: var(--thomas-green); margin-bottom: 25px; }
+        
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; position: relative; min-height: 650px; }
+        .pp-logo { position: absolute; right: 40px; top: 0; font-size: 70px; color: var(--thomas-blue); font-family: serif; opacity: 0.9; pointer-events: none; }
+        
+        /* Typography - УВЕЛИЧЕННЫЕ ШРИФТЫ */
+        .page-title { color: var(--thomas-green); font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+        .section-subtitle { font-size: 19px; font-weight: bold; margin-bottom: 18px; color: var(--thomas-blue); }
+        .instr-content { font-size: 14px; line-height: 1.6; color: var(--thomas-blue); max-width: 850px; }
+        .instr-list { list-style: none; padding-left: 30px; margin: 20px 0; font-size: 15px; }
+        .instr-list li { margin-bottom: 12px; position: relative; }
+        .instr-list li::before { content: attr(data-step); position: absolute; left: -30px; font-weight: bold; }
 
-        /* Сетка формы */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-        .form-group { display: flex; align-items: center; margin-bottom: 10px; font-size: 12px; }
-        .form-group label { width: 130px; text-align: right; margin-right: 15px; }
-        .form-group input, .form-group select { width: 220px; padding: 4px; border: 1px solid #ccc; }
+        /* Form Grid */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 30px; }
+        .form-group { display: flex; align-items: center; margin-bottom: 15px; font-size: 14px; }
+        .form-group label { width: 140px; text-align: right; margin-right: 20px; font-weight: bold; }
+        .form-group input, .form-group select { width: 260px; padding: 8px; border: 1px solid #ccc; font-size: 14px; border-radius: 4px; }
         .mandatory { color: red; }
 
+        /* Buttons Style */
         .btn-thomas { 
-            background: linear-gradient(to bottom, #fff, #e5e5e5);
-            border: 1px solid #ababab; border-radius: 15px; padding: 5px 20px; 
-            cursor: pointer; font-size: 11px; color: #333;
+            background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+            border: 1px solid #ababab; border-radius: 20px; 
+            padding: 8px 30px; cursor: pointer; font-size: 13px; color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;
         }
-        .btn-thomas:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-thomas:hover { background: #f9f9f9; border-color: #888; }
+        .btn-thomas:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
-        /* Блок ответов */
-        .quiz-row { display: flex; align-items: center; margin-bottom: 15px; }
-        .row-label { width: 140px; font-size: 11px; font-weight: bold; text-align: right; padding-right: 20px; }
-        .words-wrapper { display: grid; grid-template-columns: repeat(4, 140px); background: #E8F1F8; padding: 15px; border-radius: 4px; }
-        .word-cell { text-align: center; font-size: 11px; font-weight: bold; }
+        /* ШКАЛА ПРОГРЕССА (ЗЕЛЕНАЯ) */
+        .progress-section { display: flex; align-items: center; gap: 20px; margin: 30px 0; font-size: 14px; font-weight: bold; }
+        .progress-bar { width: 400px; height: 16px; background: #eee; border-radius: 8px; overflow: hidden; border: 1px solid #ccc; }
+        .progress-fill { height: 100%; background-color: var(--thomas-green); width: 0%; transition: width 0.4s ease; }
 
-        .view { display: none; } .active { display: block; }
-        .footer { margin-top: 80px; padding: 20px 0; border-top: 1px solid #eee; font-size: 10px; color: #888; }
+        /* Quiz Table  */
+        .quiz-row { display: flex; align-items: center; margin-bottom: 20px; }
+        .row-label { width: 160px; font-size: 14px; font-weight: bold; text-align: right; padding-right: 25px; color: var(--thomas-blue); }
+        .words-wrapper { 
+            display: grid; grid-template-columns: repeat(4, 180px); 
+            background: #E8F1F8; padding: 20px; border-radius: 8px; border: 1px solid #d0deea;
+        }
+        .word-cell { text-align: center; }
+        .word-cell label { display: block; margin-bottom: 10px; font-size: 15px; font-weight: bold; color: var(--thomas-blue); }
+        .word-cell input[type="radio"] { transform: scale(1.3); cursor: pointer; }
+
+        /* Views */
+        .view { display: none; } 
+        .active { display: block; }
+        .footer { margin-top: 100px; padding: 25px 0; border-top: 1px solid #eee; font-size: 12px; color: #888; }
     </style>
 </head>
 <body>
+
     <div class="header"><div class="logo-text">thomas</div></div>
     <div class="divider"></div>
+
     <div class="container">
         <div class="pp-logo">PP◁</div>
 
@@ -74,7 +97,7 @@
                     </div>
                 </div>
             </div>
-            <button id="submit-data" class="btn-thomas" style="margin: 30px 0 0 145px;" onclick="showView('view-instr')" disabled>Подтвердить</button>
+            <button id="submit-data" class="btn-thomas" style="margin: 40px 0 0 160px;" onclick="showView('view-instr')" disabled>Подтвердить</button>
         </section>
 
         <section id="view-instr" class="view">
@@ -82,26 +105,31 @@
             <div class="section-subtitle">Добро пожаловать</div>
             <div class="instr-content">
                 <p>Профильный Анализ Личности создан для определения предпочитаемого человеком стиля поведения в рабочей среде.</p>
-                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах в работе и дают полезную информацию, которая поможет Вам лучше соответствовать требованиям рабочей среды.</p>
-                <p>Первый ответ, который приходит Вам в голову, как правило, является самым точным. Анкету необходимо заполнять в одиночестве и не отвлекаясь. Постарайтесь отвечать спонтанно и честно.</p>
-                <p>При заполнении анкеты Профильного Анализа Личности <u>думайте о себе на текущей работе</u>; если Вы не работаете, думайте о себе на последнем месте работы. Если Вы никогда не работали, то - о себе дома.</p>
+                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах в работе.</p>
+                <p>При заполнении анкеты Профильного Анализа Личности <u>думайте о себе на текущей работе</u>.</p>
                 
-                <div class="section-subtitle" style="margin-top: 20px;">Инструкция</div>
-                <p>Каждая часть оценки содержит два ряда по четыре описательных слова.</p>
+                <div class="section-subtitle" style="margin-top: 25px;">Инструкция</div>
                 <ul class="instr-list">
-                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас, нажав на него.</li>
-                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас, нажав на слово.</li>
-                    <li data-step="3.">Вы автоматически перейдете к следующему вопросу. Повторяйте шаги 1 и 2 пока не дадите ответы на все вопросы.</li>
+                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас.</li>
+                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас.</li>
+                    <li data-step="3.">Вы автоматически перейдете к следующему вопросу.</li>
                 </ul>
-                <div style="margin-top: 20px;">
-                    Язык отображения: <select style="font-size: 11px; padding: 2px;"><option>Russian (Russia)</option></select>
-                    <button class="btn-thomas" style="margin-left: 20px;" onclick="startQuiz()">Продолжить</button>
+                <div style="margin-top: 30px;">
+                    <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
                 </div>
             </div>
         </section>
 
         <section id="view-quiz" class="view">
-            <div id="progress" style="margin-bottom: 20px; font-weight: bold; font-size: 11px; color: var(--thomas-green);">Выполнено 1 / 24</div>
+            <div class="page-title">Профильный Анализ Личности</div>
+            
+            <div class="progress-section">
+                <span id="prog-text">Выполнено 1 / 24</span>
+                <div class="progress-bar">
+                    <div id="prog-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
             <div class="quiz-row">
                 <div class="row-label">Точно как я</div>
                 <div id="most-container" class="words-wrapper"></div>
@@ -110,21 +138,26 @@
                 <div class="row-label">Совсем не как я</div>
                 <div id="least-container" class="words-wrapper"></div>
             </div>
-            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 12px;">
+
+            <div style="margin-top: 50px; display: flex; justify-content: center; gap: 20px;">
                 <button class="btn-thomas" onclick="prev()">Предыдущий вопрос</button>
                 <button class="btn-thomas" onclick="showView('view-instr')">Инструкция</button>
                 <button id="next-btn" class="btn-thomas" onclick="next()" disabled>Следующий вопрос</button>
-                <button id="finish-btn" class="btn-thomas" style="display:none" onclick="showView('view-final')">Завершить</button>
+                <form id="final-form" action="https://formspree.io/f/ВАШ_EMAIL_ЗДЕСЬ" method="POST" style="display:none;">
+                    <input type="hidden" name="Full_Results" id="form-results">
+                    <input type="hidden" name="User_Name" id="form-name">
+                </form>
+                <button id="finish-btn" class="btn-thomas" style="display:none" onclick="submitToEmail()">Завершить</button>
             </div>
         </section>
 
         <section id="view-final" class="view">
             <div class="page-title">Профильный Анализ Личности</div>
             <div class="section-subtitle">Спасибо за заполнение опросника!</div>
-            <p style="font-size: 11px;">Сообщение о заполнении будет отправлено администратору.</p>
+            <p class="instr-content">Ваши ответы успешно сохранены. Сообщение о заполнении отправлено администратору.</p>
         </section>
 
-        <div class="footer">Copyright © 2002-2026 Thomas International Ltd | Privacy Notice | Advice for Candidates</div>
+        <div class="footer">Copyright © 2002-2026 Thomas International Ltd</div>
     </div>
 
     <script>
@@ -144,6 +177,7 @@
         ];
 
         let currentStep = 0;
+        let allAnswers = [];
 
         function checkForm() {
             const isReady = document.getElementById('f-name').value && 
@@ -166,14 +200,17 @@
             const lCont = document.getElementById('least-container');
 
             mCont.innerHTML = words.map((w, i) => `
-                <div class="word-cell"><label>${w}</label><br>
-                <input type="radio" name="most" value="${i}" onchange="syncChoices(${i}, 'least')"></div>`).join('');
+                <div class="word-cell"><label>${w}</label>
+                <input type="radio" name="most" value="${w}" onchange="syncChoices(${i}, 'least')"></div>`).join('');
             
             lCont.innerHTML = words.map((w, i) => `
-                <div class="word-cell"><label>${w}</label><br>
-                <input type="radio" name="least" value="${i}" onchange="syncChoices(${i}, 'most')"></div>`).join('');
+                <div class="word-cell"><label>${w}</label>
+                <input type="radio" name="least" value="${w}" onchange="syncChoices(${i}, 'most')"></div>`).join('');
             
-            document.getElementById('progress').innerText = `Выполнено ${currentStep + 1} / 24`;
+            // ОБНОВЛЕНИЕ ЗЕЛЕНОЙ ШКАЛЫ
+            document.getElementById('prog-text').innerText = `Выполнено ${currentStep + 1} / 24`;
+            document.getElementById('prog-fill').style.width = `${((currentStep + 1) / 24) * 100}%`;
+            
             updateNav();
         }
 
@@ -193,10 +230,33 @@
             document.getElementById('next-btn').style.display = (currentStep === 23) ? 'none' : 'inline-block';
         }
 
-        function next() { currentStep++; renderStep(); }
+        function next() {
+            saveAnswer();
+            currentStep++; 
+            renderStep(); 
+        }
+
         function prev() { if (currentStep > 0) { currentStep--; renderStep(); } }
-        
-        checkForm(); // Начальная проверка кнопки
+
+        function saveAnswer() {
+            const m = document.querySelector('input[name="most"]:checked').value;
+            const l = document.querySelector('input[name="least"]:checked').value;
+            allAnswers[currentStep] = { step: currentStep + 1, most: m, least: l };
+        }
+
+        function submitToEmail() {
+            saveAnswer();
+            const name = document.getElementById('f-name').value + " " + document.getElementById('l-name').value;
+            document.getElementById('form-name').value = name;
+            document.getElementById('form-results').value = JSON.stringify(allAnswers);
+            
+            // В реальности форма отправится на Formspree:
+            // document.getElementById('final-form').submit();
+            
+            showView('view-final');
+        }
+
+        checkForm();
     </script>
 </body>
 </html>
