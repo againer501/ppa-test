@@ -6,26 +6,25 @@
     <title>Thomas PPA System</title>
     <style>
         :root { --thomas-blue: #004080; --thomas-green: #8DC53F; }
-        
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: var(--thomas-blue); background: #fff; line-height: 1.4; }
         
         .header { padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
         .logo-text { font-size: 24px; font-weight: bold; color: #333; }
-        .divider { height: 8px; background-color: var(--thomas-green); margin-bottom: 20px; }
+        .divider { height: 8px; background-color: var(--thomas-green); margin-bottom: 15px; }
         
         .container { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; }
         .pp-logo { position: absolute; right: 40px; top: 0; font-size: 50px; color: var(--thomas-blue); opacity: 0.8; }
         
-        /* ШРИФТЫ: УМЕНЬШЕНЫ ДЛЯ КОМПАКТНОСТИ */
-        .page-title { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-        .section-subtitle { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: var(--thomas-blue); }
-        .instr-content { font-size: 14px; line-height: 1.5; color: var(--thomas-blue); max-width: 800px; }
-        .instr-list { list-style: none; padding-left: 25px; margin: 15px 0; font-size: 14px; }
+        /* ШРИФТЫ: Оптимальный баланс */
+        .page-title { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+        .section-subtitle { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--thomas-blue); }
+        .instr-content { font-size: 13.5px; line-height: 1.5; color: var(--thomas-blue); max-width: 850px; }
+        .instr-list { list-style: none; padding-left: 25px; margin: 15px 0; font-size: 13.5px; }
         .instr-list li { margin-bottom: 8px; position: relative; }
         .instr-list li::before { content: attr(data-step); position: absolute; left: -25px; font-weight: bold; }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-        .form-group { display: flex; align-items: center; margin-bottom: 12px; font-size: 13px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 15px; }
+        .form-group { display: flex; align-items: center; margin-bottom: 10px; font-size: 13px; }
         .form-group label { width: 120px; text-align: right; margin-right: 15px; font-weight: bold; }
         .form-group input, .form-group select { width: 220px; padding: 6px; border: 1px solid #ccc; font-size: 13px; border-radius: 3px; }
         .mandatory { color: red; }
@@ -43,16 +42,13 @@
 
         .quiz-row { display: flex; align-items: center; margin-bottom: 15px; }
         .row-label { width: 140px; font-size: 13px; font-weight: bold; text-align: right; padding-right: 20px; }
-        .words-wrapper { 
-            display: grid; grid-template-columns: repeat(4, 150px); 
-            background: #E8F1F8; padding: 20px; border-radius: 6px; 
-        }
+        .words-wrapper { display: grid; grid-template-columns: repeat(4, 150px); background: #E8F1F8; padding: 15px; border-radius: 6px; }
         .word-cell { text-align: center; }
         .word-cell label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
         .word-cell input[type="radio"] { transform: scale(1.2); }
 
         .view { display: none; } .active { display: block; }
-        .footer { margin-top: 60px; padding: 20px 0; border-top: 1px solid #eee; font-size: 11px; color: #888; }
+        .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid #eee; font-size: 11px; color: #888; }
     </style>
 </head>
 <body>
@@ -88,15 +84,21 @@
             <div class="section-subtitle">Добро пожаловать</div>
             <div class="instr-content">
                 <p>Профильный Анализ Личности создан для определения предпочитаемого человеком стиля поведения в рабочей среде.</p>
-                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты акцентируют внимание на Ваших сильных сторонах.</p>
-                <p>Первый ответ, который приходит в голову, обычно самый точный. Отвечайте спонтанно.</p>
-                <p>Думайте о себе <u>на текущей работе</u>.</p>
+                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах в работе и дают полезную информацию, которая поможет Вам лучше соответствовать требованиям рабочей среды.</p>
+                <p>Первый ответ, который приходит Вам в голову, как правило, является самым точным. Анкету необходимо заполнять в одиночестве и не отвлекаясь. Постарайтесь отвечать спонтанно и честно.</p>
+                <p>При заполнении анкеты Профильного Анализа Личности <u>думайте о себе на текущей работе</u>; если Вы не работаете, думайте о себе на последнем месте работы. Если Вы никогда не работали, то - о себе дома.</p>
+                
                 <div class="section-subtitle" style="margin-top: 15px;">Инструкция</div>
+                <p>Каждая часть оценки содержит два ряда по четыре описательных слова.</p>
                 <ul class="instr-list">
-                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас.</li>
-                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас.</li>
+                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас, нажав на него.</li>
+                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас, нажав на слово.</li>
+                    <li data-step="3.">Вы автоматически перейдете к следующему вопросу. Повторяйте шаги 1 и 2 пока не дадите ответы на все вопросы.</li>
                 </ul>
-                <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <span style="font-size: 12px; color: #666;">Язык отображения: Russian (Russia)</span>
+                    <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
+                </div>
             </div>
         </section>
 
@@ -113,7 +115,7 @@
                 <div class="row-label">Совсем не как я</div>
                 <div id="least-container" class="words-wrapper"></div>
             </div>
-            <div style="margin-top: 40px; display: flex; justify-content: center; gap: 15px;">
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 15px;">
                 <button class="btn-thomas" onclick="prev()">Предыдущий</button>
                 <button class="btn-thomas" onclick="showView('view-instr')">Инструкция</button>
                 <button id="next-btn" class="btn-thomas" onclick="next()" disabled>Следующий</button>
@@ -127,8 +129,8 @@
         </section>
 
         <section id="view-final" class="view">
-            <div class="page-title">Готово!</div>
-            <p class="instr-content">Данные отправлены на againer@yandex.ru. При первом запуске подтвердите письмо от Formspree.</p>
+            <div class="page-title">Завершено</div>
+            <p class="instr-content">Данные отправлены администратору. Если вы делаете это впервые, проверьте почту <b>againer@yandex.ru</b> для активации отчетов.</p>
         </section>
 
         <div class="footer">Copyright © 2002-2026 Thomas International Ltd</div>
@@ -189,7 +191,9 @@
         function next() { saveStep(); currentStep++; renderStep(); }
         function prev() { if (currentStep > 0) { currentStep--; renderStep(); } }
         function saveStep() {
-            results[currentStep] = `Группа ${currentStep+1}: M:${document.querySelector('input[name="most"]:checked').value}, L:${document.querySelector('input[name="least"]:checked').value}`;
+            const m = document.querySelector('input[name="most"]:checked');
+            const l = document.querySelector('input[name="least"]:checked');
+            if (m && l) results[currentStep] = `№${currentStep+1}: M:${m.value}, L:${l.value}`;
         }
 
         function submitFinal() {
