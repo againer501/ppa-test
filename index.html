@@ -3,61 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thomas PPA System - Official Version</title>
+    <title>Thomas PPA System</title>
     <style>
-        :root { 
-            --thomas-blue: #004080; 
-            --thomas-green: #8DC53F; 
-        }
+        :root { --thomas-blue: #004080; --thomas-green: #8DC53F; }
         
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: var(--thomas-blue); background: #fff; line-height: 1.5; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: var(--thomas-blue); background: #fff; line-height: 1.4; }
         
-        .header { padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; }
-        .logo-text { font-size: 28px; font-weight: bold; color: #333; letter-spacing: -1px; }
-        .divider { height: 10px; background-color: var(--thomas-green); margin-bottom: 25px; }
+        .header { padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #333; }
+        .divider { height: 8px; background-color: var(--thomas-green); margin-bottom: 20px; }
         
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; position: relative; min-height: 650px; }
-        .pp-logo { position: absolute; right: 40px; top: 0; font-size: 70px; color: var(--thomas-blue); font-family: serif; opacity: 0.9; pointer-events: none; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; }
+        .pp-logo { position: absolute; right: 40px; top: 0; font-size: 50px; color: var(--thomas-blue); opacity: 0.8; }
         
-        .page-title { color: var(--thomas-green); font-size: 24px; font-weight: bold; margin-bottom: 15px; }
-        .section-subtitle { font-size: 22px; font-weight: bold; margin-bottom: 18px; color: var(--thomas-blue); }
-        .instr-content { font-size: 17px; line-height: 1.7; color: var(--thomas-blue); max-width: 900px; }
-        .instr-list { list-style: none; padding-left: 35px; margin: 25px 0; font-size: 17px; }
-        .instr-list li { margin-bottom: 15px; position: relative; }
-        .instr-list li::before { content: attr(data-step); position: absolute; left: -35px; font-weight: bold; }
+        /* ШРИФТЫ: УМЕНЬШЕНЫ ДЛЯ КОМПАКТНОСТИ */
+        .page-title { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .section-subtitle { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: var(--thomas-blue); }
+        .instr-content { font-size: 14px; line-height: 1.5; color: var(--thomas-blue); max-width: 800px; }
+        .instr-list { list-style: none; padding-left: 25px; margin: 15px 0; font-size: 14px; }
+        .instr-list li { margin-bottom: 8px; position: relative; }
+        .instr-list li::before { content: attr(data-step); position: absolute; left: -25px; font-weight: bold; }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 30px; }
-        .form-group { display: flex; align-items: center; margin-bottom: 20px; font-size: 16px; }
-        .form-group label { width: 140px; text-align: right; margin-right: 25px; font-weight: bold; }
-        .form-group input, .form-group select { width: 280px; padding: 12px; border: 1px solid #ccc; font-size: 16px; border-radius: 4px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .form-group { display: flex; align-items: center; margin-bottom: 12px; font-size: 13px; }
+        .form-group label { width: 120px; text-align: right; margin-right: 15px; font-weight: bold; }
+        .form-group input, .form-group select { width: 220px; padding: 6px; border: 1px solid #ccc; font-size: 13px; border-radius: 3px; }
         .mandatory { color: red; }
 
         .btn-thomas { 
             background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
-            border: 1px solid #ababab; border-radius: 25px; 
-            padding: 12px 40px; cursor: pointer; font-size: 16px; color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;
+            border: 1px solid #ababab; border-radius: 15px; 
+            padding: 7px 25px; cursor: pointer; font-size: 13px; color: #333; font-weight: bold;
         }
-        .btn-thomas:hover { background: #f9f9f9; }
         .btn-thomas:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .progress-section { display: flex; align-items: center; gap: 20px; margin: 35px 0; font-size: 16px; font-weight: bold; }
-        .progress-bar { width: 450px; height: 18px; background: #eee; border-radius: 9px; overflow: hidden; border: 1px solid #ccc; }
+        .progress-section { display: flex; align-items: center; gap: 15px; margin: 20px 0; font-size: 13px; font-weight: bold; }
+        .progress-bar { width: 300px; height: 12px; background: #eee; border-radius: 6px; overflow: hidden; border: 1px solid #ccc; }
         .progress-fill { height: 100%; background-color: var(--thomas-green); width: 0%; transition: width 0.4s ease; }
 
-        .quiz-row { display: flex; align-items: center; margin-bottom: 30px; }
-        .row-label { width: 180px; font-size: 17px; font-weight: bold; text-align: right; padding-right: 30px; color: var(--thomas-blue); }
+        .quiz-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .row-label { width: 140px; font-size: 13px; font-weight: bold; text-align: right; padding-right: 20px; }
         .words-wrapper { 
-            display: grid; grid-template-columns: repeat(4, 190px); 
-            background: #E8F1F8; padding: 30px; border-radius: 10px; border: 1px solid #d0deea;
+            display: grid; grid-template-columns: repeat(4, 150px); 
+            background: #E8F1F8; padding: 20px; border-radius: 6px; 
         }
         .word-cell { text-align: center; }
-        .word-cell label { display: block; margin-bottom: 15px; font-size: 18px; font-weight: bold; color: var(--thomas-blue); }
-        .word-cell input[type="radio"] { transform: scale(1.6); cursor: pointer; }
+        .word-cell label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+        .word-cell input[type="radio"] { transform: scale(1.2); }
 
-        .view { display: none; } 
-        .active { display: block; }
-        .footer { margin-top: 100px; padding: 30px 0; border-top: 1px solid #eee; font-size: 14px; color: #888; }
+        .view { display: none; } .active { display: block; }
+        .footer { margin-top: 60px; padding: 20px 0; border-top: 1px solid #eee; font-size: 11px; color: #888; }
     </style>
 </head>
 <body>
@@ -81,15 +76,11 @@
                     <div class="form-group"><label>Компания</label><input type="text" id="comp"></div>
                     <div class="form-group"><label>Должность</label><input type="text" id="pos"></div>
                     <div class="form-group"><label>Страна <span class="mandatory">*</span></label>
-                        <select id="country" onchange="checkForm()">
-                            <option value="">Выберите...</option>
-                            <option value="Uzbekistan" selected>Uzbekistan</option>
-                            <option value="Russia">Russia</option>
-                        </select>
+                        <select id="country" onchange="checkForm()"><option value="Uzbekistan" selected>Uzbekistan</option></select>
                     </div>
                 </div>
             </div>
-            <button id="submit-data" class="btn-thomas" style="margin: 40px 0 0 165px;" onclick="showView('view-instr')" disabled>Подтвердить</button>
+            <button id="submit-data" class="btn-thomas" style="margin: 20px 0 0 135px;" onclick="showView('view-instr')" disabled>Подтвердить</button>
         </section>
 
         <section id="view-instr" class="view">
@@ -97,33 +88,23 @@
             <div class="section-subtitle">Добро пожаловать</div>
             <div class="instr-content">
                 <p>Профильный Анализ Личности создан для определения предпочитаемого человеком стиля поведения в рабочей среде.</p>
-                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах в работе и дают полезную информацию, которая поможет Вам лучше соответствовать требованиям рабочей среды.</p>
-                <p>Первый ответ, который приходит Вам в голову, как правило, является самым точным. Анкету необходимо заполнять в одиночестве и не отвлекаясь. Постарайтесь отвечать спонтанно и честно.</p>
-                <p>При заполнении анкеты Профильного Анализа Личности <u>думайте о себе на текущей работе</u>; если Вы не работаете, думайте о себе на последнем месте работы. Если Вы никогда не работали, то - о себе дома.</p>
-                
-                <div class="section-subtitle" style="margin-top: 30px;">Инструкция</div>
-                <p>Каждая часть оценки содержит два ряда по четыре описательных слова.</p>
+                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты акцентируют внимание на Ваших сильных сторонах.</p>
+                <p>Первый ответ, который приходит в голову, обычно самый точный. Отвечайте спонтанно.</p>
+                <p>Думайте о себе <u>на текущей работе</u>.</p>
+                <div class="section-subtitle" style="margin-top: 15px;">Инструкция</div>
                 <ul class="instr-list">
-                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас, нажав на него.</li>
-                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас, нажав на слово.</li>
-                    <li data-step="3.">Вы автоматически перейдете к следующему вопросу. Повторяйте шаги 1 и 2 пока не дадите ответы на все вопросы.</li>
+                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас.</li>
+                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас.</li>
                 </ul>
-                <div style="margin-top: 30px;">
-                    <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
-                </div>
+                <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
             </div>
         </section>
 
         <section id="view-quiz" class="view">
-            <div class="page-title">Профильный Анализ Личности</div>
-            
             <div class="progress-section">
                 <span id="prog-text">Выполнено 1 / 24</span>
-                <div class="progress-bar">
-                    <div id="prog-fill" class="progress-fill"></div>
-                </div>
+                <div class="progress-bar"><div id="prog-fill" class="progress-fill"></div></div>
             </div>
-
             <div class="quiz-row">
                 <div class="row-label">Точно как я</div>
                 <div id="most-container" class="words-wrapper"></div>
@@ -132,26 +113,22 @@
                 <div class="row-label">Совсем не как я</div>
                 <div id="least-container" class="words-wrapper"></div>
             </div>
-
-            <div style="margin-top: 60px; display: flex; justify-content: center; gap: 25px;">
-                <button class="btn-thomas" onclick="prev()">Предыдущий вопрос</button>
+            <div style="margin-top: 40px; display: flex; justify-content: center; gap: 15px;">
+                <button class="btn-thomas" onclick="prev()">Предыдущий</button>
                 <button class="btn-thomas" onclick="showView('view-instr')">Инструкция</button>
-                <button id="next-btn" class="btn-thomas" onclick="next()" disabled>Следующий вопрос</button>
+                <button id="next-btn" class="btn-thomas" onclick="next()" disabled>Следующий</button>
                 <button id="finish-btn" class="btn-thomas" style="display:none" onclick="submitFinal()">Завершить</button>
             </div>
-            
-            <form id="ppa-form" action="https://formspree.io/f/xpwzpode" method="POST" style="display:none;">
+            <form id="ppa-form" action="https://formspree.io/f/againer@yandex.ru" method="POST" style="display:none;">
                 <input type="text" name="Candidate" id="send-name">
-                <input type="text" name="Email" id="send-email">
-                <input type="text" name="Company" id="send-company">
-                <textarea name="Full_Results" id="send-answers"></textarea>
+                <input type="email" name="_replyto" id="send-email">
+                <textarea name="Results" id="send-answers"></textarea>
             </form>
         </section>
 
         <section id="view-final" class="view">
-            <div class="page-title">Профильный Анализ Личности</div>
-            <div class="section-subtitle">Спасибо за заполнение опросника!</div>
-            <p class="instr-content">Данные успешно отправлены администратору. Теперь вы можете закрыть эту страницу.</p>
+            <div class="page-title">Готово!</div>
+            <p class="instr-content">Данные отправлены на againer@yandex.ru. При первом запуске подтвердите письмо от Formspree.</p>
         </section>
 
         <div class="footer">Copyright © 2002-2026 Thomas International Ltd</div>
@@ -173,35 +150,24 @@
             ["крайне активный", "приятный", "проницательный", "уступчивый"], ["неугомонный", "добрососедский", "популярный", "преданный"]
         ];
 
-        let currentStep = 0;
-        let results = [];
+        let currentStep = 0, results = [];
 
         function checkForm() {
-            const isReady = document.getElementById('f-name').value && 
-                            document.getElementById('l-name').value && 
-                            document.getElementById('u-email').value && 
-                            document.getElementById('country').value;
+            const isReady = document.getElementById('f-name').value && document.getElementById('l-name').value && document.getElementById('u-email').value;
             document.getElementById('submit-data').disabled = !isReady;
         }
 
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
         }
 
         function startQuiz() { showView('view-quiz'); renderStep(); }
 
         function renderStep() {
             const words = questions[currentStep];
-            document.getElementById('most-container').innerHTML = words.map((w, i) => `
-                <div class="word-cell"><label>${w}</label>
-                <input type="radio" name="most" value="${w}" onchange="syncChoices(${i}, 'least')"></div>`).join('');
-            
-            document.getElementById('least-container').innerHTML = words.map((w, i) => `
-                <div class="word-cell"><label>${w}</label>
-                <input type="radio" name="least" value="${w}" onchange="syncChoices(${i}, 'most')"></div>`).join('');
-            
+            document.getElementById('most-container').innerHTML = words.map((w, i) => `<div class="word-cell"><label>${w}</label><input type="radio" name="most" value="${w}" onchange="syncChoices(${i}, 'least')"></div>`).join('');
+            document.getElementById('least-container').innerHTML = words.map((w, i) => `<div class="word-cell"><label>${w}</label><input type="radio" name="least" value="${w}" onchange="syncChoices(${i}, 'most')"></div>`).join('');
             document.getElementById('prog-text').innerText = `Выполнено ${currentStep + 1} / 24`;
             document.getElementById('prog-fill').style.width = `${((currentStep + 1) / 24) * 100}%`;
             updateNav();
@@ -214,46 +180,26 @@
         }
 
         function updateNav() {
-            const mChecked = document.querySelector('input[name="most"]:checked');
-            const lChecked = document.querySelector('input[name="least"]:checked');
-            const isDone = mChecked && lChecked;
+            const isDone = document.querySelector('input[name="most"]:checked') && document.querySelector('input[name="least"]:checked');
             document.getElementById('next-btn').disabled = !isDone || currentStep === 23;
             document.getElementById('finish-btn').style.display = (currentStep === 23 && isDone) ? 'inline-block' : 'none';
             document.getElementById('next-btn').style.display = (currentStep === 23) ? 'none' : 'inline-block';
         }
 
-        function next() {
-            saveStep();
-            currentStep++; 
-            renderStep(); 
-        }
-
+        function next() { saveStep(); currentStep++; renderStep(); }
         function prev() { if (currentStep > 0) { currentStep--; renderStep(); } }
-
         function saveStep() {
-            const m = document.querySelector('input[name="most"]:checked').value;
-            const l = document.querySelector('input[name="least"]:checked').value;
-            results[currentStep] = `№${currentStep+1} [M:${m} | L:${l}]`;
+            results[currentStep] = `Группа ${currentStep+1}: M:${document.querySelector('input[name="most"]:checked').value}, L:${document.querySelector('input[name="least"]:checked').value}`;
         }
 
         function submitFinal() {
             saveStep();
             document.getElementById('send-name').value = document.getElementById('f-name').value + " " + document.getElementById('l-name').value;
             document.getElementById('send-email').value = document.getElementById('u-email').value;
-            document.getElementById('send-company').value = document.getElementById('comp').value;
             document.getElementById('send-answers').value = results.join('\n');
-            
             const form = document.getElementById('ppa-form');
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: { 'Accept': 'application/json' }
-            }).then(() => {
-                showView('view-final');
-            });
+            fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } }).then(() => showView('view-final'));
         }
-
-        checkForm();
     </script>
 </body>
 </html>
