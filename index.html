@@ -2,185 +2,176 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Thomas PPA System - Professional Report</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thomas PPA System</title>
     <style>
-        :root { --primary: #1a237e; --bg: #f4f7f9; --zone: rgba(200, 200, 200, 0.4); }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        
-        /* Анкета по страницам */
-        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 25px; }
-        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
-        .question-page { display: none; }
-        .question-page.active { display: block; }
-        
-        /* Стили таблицы */
-        .header { background: var(--primary); color: white; display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 15px; font-weight: bold; text-align: center; border-radius: 6px; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 18px 15px; border-bottom: 1px solid #eee; align-items: center; font-size: 18px; }
-        input[type="radio"] { width: 26px; height: 26px; cursor: pointer; }
-
-        /* Отчет */
-        #results { display: none; }
-        .charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px; }
-        .chart-wrapper { height: 650px; position: relative; } 
-        .report-header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
-        
-        .btn { padding: 15px 25px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn-next { background: var(--primary); color: white; width: 100%; }
-        .btn-prev { background: #cfd8dc; color: #37474f; }
-        
-        @media print {
-            .no-print, .btn, .progress-bar { display: none !important; }
-            .container { box-shadow: none; max-width: 100%; padding: 0; }
-            .chart-wrapper { height: 700px; }
+        :root {
+            --thomas-blue: #004080;
+            --thomas-green: #8DC53F;
+            --thomas-light-green: #DFEDC4;
+            --thomas-bg-blue: #E8F0F7;
         }
+
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: var(--thomas-blue); }
+        
+        /* Layout Elements */
+        .header-logo { padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-text { font-size: 28px; font-weight: bold; color: var(--thomas-blue); }
+        .logo-text span { color: var(--thomas-green); }
+        .green-divider { height: 8px; background-color: var(--thomas-green); margin-bottom: 25px; }
+        .main-container { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; min-height: 500px; }
+        .footer { margin-top: 60px; border-top: 1px solid var(--thomas-light-green); padding: 15px 40px; font-size: 10px; color: var(--thomas-blue); }
+
+        /* Typography */
+        .title-green { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .title-blue { color: var(--thomas-blue); font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        p, label, li { font-size: 11px; line-height: 1.5; }
+        .highlight { font-weight: bold; }
+
+        /* Forms & Buttons */
+        .input-group { display: grid; grid-template-columns: 180px 1fr; margin-bottom: 8px; align-items: center; }
+        input[type="text"], input[type="email"], select { border: 1px solid #ccc; padding: 3px 5px; font-size: 12px; width: 250px; }
+        .btn-thomas { background-color: #eee; border: 1px solid #999; border-radius: 15px; padding: 5px 25px; font-size: 11px; cursor: pointer; color: #333; }
+        .btn-thomas:hover { background-color: #e0e0e0; }
+
+        /* Quiz Specifics */
+        .progress-section { display: flex; align-items: center; gap: 15px; margin: 20px 0; font-size: 11px; font-weight: bold; }
+        .progress-bg { width: 300px; height: 12px; background-color: #eee; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background-color: var(--thomas-green); width: 0%; transition: width 0.3s; }
+        
+        .quiz-grid { display: grid; grid-template-columns: 130px 1fr; gap: 10px; margin-bottom: 25px; }
+        .row-label { font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: flex-end; padding-right: 15px; }
+        .words-row { display: grid; grid-template-columns: repeat(4, 1fr); background-color: var(--thomas-bg-blue); border-radius: 8px; padding: 15px; text-align: center; }
+        .word-item { cursor: pointer; }
+        .word-text { display: block; font-size: 12px; margin-bottom: 8px; }
+
+        /* Branding */
+        .side-branding { position: absolute; right: 0; top: 0; text-align: right; }
+        .pp-logo { font-size: 60px; font-family: serif; }
+        .pp-arrow { color: var(--thomas-green); font-size: 30px; margin-left: -10px; }
+
+        /* View Management */
+        .page-view { display: none; }
+        .page-view.active { display: block; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="quiz" class="no-print">
-        <div id="setup">
-            <h1 style="text-align:center; color:var(--primary)">Thomas PPA Assessment</h1>
-            <input type="text" id="uName" placeholder="ФИО сотрудника" style="width:100%; padding:15px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-            <input type="date" id="uDate" style="width:100%; padding:15px; margin-bottom:20px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-            <button class="btn btn-next" onclick="start()">НАЧАТЬ ТЕСТИРОВАНИЕ</button>
+    <div class="header-logo">
+        <div class="logo-text">thomas<span>*</span></div>
+    </div>
+    <div class="green-divider"></div>
+
+    <div class="main-container">
+        <div class="side-branding">
+            <span class="pp-logo">PP</span><span class="pp-arrow">◁</span>
         </div>
 
-        <div id="test" style="display:none">
-            <div class="progress-bar"><div id="progress-fill"></div></div>
-            <h3 id="counter" style="color:var(--primary)">Группа 1 из 24</h3>
-            <div class="header"><div>Список слов</div><div>Б</div><div>М</div></div>
-            <div id="q-box"></div>
-            <div style="display:flex; gap:15px; justify-content:space-between">
-                <button class="btn btn-prev" id="pBtn" onclick="nav(-1)">Назад</button>
-                <button class="btn btn-next" id="nBtn" onclick="nav(1)">Далее</button>
-                <button class="btn btn-next" id="fBtn" onclick="finish()" style="display:none; background:#2e7d32">ЗАВЕРШИТЬ</button>
+        <section id="page-start" class="page-view active">
+            <div class="title-green">Профильный Анализ Личности</div>
+            <div class="title-blue">Персональные данные</div>
+            <form id="userDataForm">
+                <div class="input-group"><label>Обращение</label><input type="text"></div>
+                <div class="input-group"><label class="highlight">Имя *</label><input type="text" required></div>
+                <div class="input-group"><label class="highlight">Фамилия *</label><input type="text" required></div>
+                <div class="input-group"><label class="highlight">Email *</label><input type="email" required></div>
+                <div class="input-group"><label>Страна</label>
+                    <select><option>Uzbekistan</option><option>Russia</option></select>
+                </div>
+                <div style="margin-top:20px; padding-left:180px;">
+                    <button type="button" class="btn-thomas" onclick="showPage('page-instruction')">Подтвердить</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="page-instruction" class="page-view">
+            <div class="title-green">Профильный Анализ Личности</div>
+            <div class="title-blue">Добро пожаловать</div>
+            <p><span class="highlight">Это не тест.</span> Здесь нет "правильных" ответов. Думайте о себе <span class="highlight">на текущей работе</span>.</p>
+            <div class="title-blue">Инструкция</div>
+            <ul style="color:var(--thomas-blue); padding-left:20px;">
+                <li>1. Выберите слово, которое <span class="highlight">НАИБОЛЕЕ</span> характеризует Вас.</li>
+                <li>2. Выберите слово, которое <span class="highlight">НАИМЕНЕЕ</span> характеризует Вас.</li>
+            </ul>
+            <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
+        </section>
+
+        <section id="page-quiz" class="page-view">
+            <div class="title-green">Профильный Анализ Личности</div>
+            <p id="quiz-top-text">Выберите одно слово, которое БОЛЕЕ ВСЕГО характеризует Вас...</p>
+            
+            <div class="progress-section">
+                <span id="progress-text">Выполнено 1 / 24</span>
+                <div class="progress-bg"><div id="progress-bar" class="progress-fill"></div></div>
             </div>
-        </div>
+
+            <div class="quiz-grid">
+                <div class="row-label">Точно как я</div>
+                <div class="words-row" id="row-most"></div>
+                <div class="row-label" style="margin-top:10px">Совсем не как я</div>
+                <div class="words-row" style="margin-top:10px" id="row-least"></div>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:10px;">
+                <button class="btn-thomas" onclick="prevQuestion()">Предыдущий вопрос</button>
+                <button class="btn-thomas" id="btn-finish" style="display:none; font-weight:bold;" onclick="showPage('page-final')">Завершить</button>
+                <button class="btn-thomas" id="btn-next" onclick="nextQuestion()">Следующий вопрос</button>
+            </div>
+            <p id="finish-notice" style="display:none; text-align:center; margin-top:15px;">Вы закончили заполнение анкеты. Нажмите "Завершить".</p>
+        </section>
+
+        <section id="page-final" class="page-view">
+            <div class="title-green">Профильный Анализ Личности</div>
+            <div class="title-blue">Спасибо за заполнение опросника!</div>
+            <p>Сообщение о заполнении будет отправлено администратору.</p>
+        </section>
     </div>
 
-    <div id="results">
-        <div class="report-header">
-            <h2 id="rName" style="margin:0">ГРАФИКИ И ЦИФРЫ</h2>
-            <p id="rDate" style="font-size:1.2em; color:#555"></p>
-        </div>
-        <div class="charts-grid">
-            <div><h4 style="text-align:center">I: Работа</h4><div class="chart-wrapper"><canvas id="c1"></canvas></div></div>
-            <div><h4 style="text-align:center">II: Давление</h4><div class="chart-wrapper"><canvas id="c2"></canvas></div></div>
-            <div><h4 style="text-align:center">III: Автопортрет</h4><div class="chart-wrapper"><canvas id="c3"></canvas></div></div>
-        </div>
-        <button class="btn btn-next" onclick="window.print()" style="background:#2e7d32; margin-top:40px">СОХРАНИТЬ В PDF</button>
+    <div class="footer">
+        Copyright © 2002-2026 Thomas International Ltd | Privacy Notice | Advice for Candidates
     </div>
-</div>
 
-<script>
-const words = [["Мягкий","Убеждающий","Скромный","Оригинальный"],["Привлекательный","Обязательный","Упорный","Милый"],["Управляемый","Смелый","Верный","Обворожительный"],["Прогрессивный","Любезный","Волевой","Веселый"],["Жизнерадостный","Точный","Отважный","Уравновешенный"],["Соперничающий","Тактичный","Счастливый","Гармоничный"],["Суетливый","Послушный","Непобедимый","Игривый"],["Храбрый","Воодушевляющий","Покорный","Застенчивый"],["Общительный","Терпеливый","Самоуверенный","Учтивый"],["Предприимчивый","Восприимчивый","Искренний","Воздержанный"],["Разговорчивый","Самоуправляемый","Законопослушный","Решительный"],["Утонченный","Смелый","Дипломатичный","Довольный"],["Агрессивный","Душа общества","Безотказный","Боязливый"],["Осторожный","Непреклонный","Убедительный","Добродушный"],["Целеустремленный","Стремящийся","Соглашающийся","Неунывающий"],["Уверенный","Сочувствующий","Терпимый","Напористый"],["Дисциплинированный","Щедрый","Подвижный","Настойчивый"],["Восхитительный","Добрый","Безропотный","Волевой"],["Уважительный","Лидирующий","Оптимистичный","Уживчивый"],["Аргументирующий","Адаптирующийся","Безразличный","Беззаботный"],["Доверчивый","Довольный","Позитивный","Мирный"],["Компанейский","Культурный","Энергичный","Снисходительный"],["Общительный","Аккуратный","Прямолинейный","Сдержанный"],["Неугомонный","Добрососедский","Популярный","Преданный"]];
-const keys = {"Мягкий":["S","I"],"Убеждающий":["Mask","S"],"Скромный":["C","D"],"Оригинальный":["D","C"],"Привлекательный":["I","C"],"Обязательный":["Mask","D"],"Упорный":["D","S"],"Милый":["Mask","Mask"],"Управляемый":["C","D"],"Смелый":["D","S"],"Верный":["S","I"],"Обворожительный":["I","C"],"Прогрессивный":["D","S"],"Любезный":["S","I"],"Волевой":["D","S"],"Веселый":["I","C"],"Жизнерадостный":["I","C"],"Точный":["C","D"],"Отважный":["D","S"],"Уравновешенный":["S","I"],"Соперничающий":["D","S"],"Тактичный":["C","D"],"Счастливый":["I","C"],"Гармоничный":["S","Mask"],"Суетливый":["C","S"],"Послушный":["S","I"],"Непобедимый":["D","S"],"Игривый":["I","C"],"Храбрый":["D","S"],"Воодушевляющий":["I","C"],"Покорный":["C","D"],"Застенчивый":["C","D"],"Общительный":["I","C"],"Терпеливый":["S","I"],"Самоуверенный":["D","S"],"Учтивый":["C","D"],"Предприимчивый":["D","S"],"Восприимчивый":["S","I"],"Искренний":["S","Mask"],"Воздержанный":["C","I"],"Разговорчивый":["I","C"],"Самоуправляемый":["Mask","Mask"],"Законопослушный":["C","D"],"Решительный":["D","S"],"Утонченный":["C","D"],"Смелый":["D","S"],"Дипломатичный":["C","D"],"Довольный":["S","I"],"Агрессивный":["D","S"],"Душа общества":["I","C"],"Безотказный":["Mask","Mask"],"Боязливый":["C","D"],"Осторожный":["C","D"],"Непреклонный":["D","S"],"Убедительный":["Mask","S"],"Добродушный":["S","I"],"Целеустремленный":["S","S"],"Стремящийся":["D","S"],"Соглашающийся":["S","D"],"Неунывающий":["I","C"],"Уверенный":["D","S"],"Сочувствующий":["S","I"],"Терпимый":["C","D"],"Напористый":["D","S"],"Дисциплинированный":["C","D"],"Щедрый":["Mask","Mask"],"Подвижный":["I","C"],"Настойчивый":["D","S"],"Восхитительный":["I","C"],"Добрый":["S","I"],"Безропотный":["S","D"],"Волевой":["Mask","S"],"Уважительный":["C","D"],"Лидирующий":["D","C"],"Оптимистичный":["I","C"],"Уживчивый":["Mask","Mask"],"Аргументирующий":["Mask","S"],"Адаптирующийся":["S","C"],"Безразличный":["C","S"],"Беззаботный":["I","C"],"Доверчивый":["S","C"],"Довольный":["S","I"],"Позитивный":["I","C"],"Мирный":["S","D"],"Компанейский":["I","C"],"Культурный":["C","D"],"Энергичный":["I","C"],"Снисходительный":["S","D"],"Общительный":["Mask","C"],"Аккуратный":["C","D"],"Прямолинейный":["D","S"],"Сдержанный":["S","I"],"Неугомонный":["D","I"],"Добрососедский":["Mask","Mask"],"Популярный":["I","C"],"Преданный":["S","Mask"]};
+    <script>
+        let currentStep = 0;
+        const totalSteps = 24;
+        const questions = [
+            ["мягкий", "убеждающий", "скромный", "оригинальный"],
+            ["привлекательный", "обязательный", "упорный", "милый"],
+            // Группы слов могут быть дополнены здесь
+            ["неугомонный", "добрососедский", "популярный", "преданный"] // 24-й вопрос
+        ];
 
-let cur = 0;
-
-function start() {
-    document.getElementById('setup').style.display='none';
-    document.getElementById('test').style.display='block';
-    const box = document.getElementById('q-box');
-    words.forEach((g, i) => {
-        let p = document.createElement('div');
-        p.className = `question-page q-${i}`;
-        g.forEach((w, idx) => {
-            p.innerHTML += `<div class="row"><div>${w}</div>
-                <div style="text-align:center"><input type="radio" name="m${i}" value="${w}" onclick="sync(${i},${idx},'l')"></div>
-                <div style="text-align:center"><input type="radio" name="l${i}" value="${w}" onclick="sync(${i},${idx},'m')"></div></div>`;
-        });
-        box.appendChild(p);
-    });
-    update();
-}
-
-function sync(g, r, t) {
-    const els = document.getElementsByName(t + g);
-    els.forEach(x => x.disabled = false);
-    els[r].disabled = true;
-}
-
-function update() {
-    document.querySelectorAll('.question-page').forEach(p => p.classList.remove('active'));
-    document.querySelector(`.q-${cur}`).classList.add('active');
-    document.getElementById('counter').innerText = `Группа ${cur + 1} из 24`;
-    document.getElementById('progress-fill').style.width = `${((cur + 1) / 24) * 100}%`;
-    document.getElementById('pBtn').style.visibility = cur === 0 ? 'hidden' : 'visible';
-    document.getElementById('nBtn').style.display = cur === 23 ? 'none' : 'block';
-    document.getElementById('fBtn').style.display = cur === 23 ? 'block' : 'none';
-}
-
-function nav(d) {
-    if(d > 0 && (!document.querySelector(`input[name="m${cur}"]:checked`) || !document.querySelector(`input[name="l${cur}"]:checked`))) {
-        alert("Выберите оба варианта"); return;
-    }
-    cur += d; update();
-}
-
-// ПЛАГИН ОТРИСОВКИ ЗОН ИЗ УЧЕБНИКА
-const ppaZones = {
-    beforeDraw: (chart) => {
-        const {ctx, chartArea: {top, bottom, left, right, height}, scales: {y}} = chart;
-        const unit = height / (y.max - y.min);
-        ctx.save();
-        ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
-        // Верхняя зона (High)
-        ctx.fillRect(left, top, right - left, unit * 2.5);
-        // Нижняя зона (Low)
-        ctx.fillRect(left, bottom - (unit * 2.5), right - left, unit * 2.5);
-        // Центральная зона (Situational)
-        const mid = height / 2 + top;
-        ctx.fillStyle = 'rgba(200, 200, 200, 0.15)';
-        ctx.fillRect(left, mid - (unit * 1.5), right - left, unit * 3);
-        ctx.restore();
-    },
-    afterDraw: (chart) => {
-        const {ctx, scales: {x, y}} = chart;
-        ctx.font = 'bold 15px Arial'; ctx.fillStyle = '#1a237e'; ctx.textAlign = 'center';
-        chart.data.datasets[0].data.forEach((v, i) => {
-            ctx.fillText(v, x.getPixelForValue(i), y.getPixelForValue(y.min) + 50);
-        });
-    }
-};
-
-function drawChart(id, vals, min, max) {
-    new Chart(document.getElementById(id), {
-        type: 'line',
-        data: { labels: ['D','I','S','C'], datasets: [{ data: [vals.D, vals.I, vals.S, vals.C], borderColor: '#1a237e', borderWidth: 3, pointRadius: 8, fill: false, tension: 0 }] },
-        plugins: [ppaZones],
-        options: {
-            maintainAspectRatio: false,
-            layout: { padding: { bottom: 60, top: 20 } },
-            scales: {
-                y: { min, max, ticks: { display: false }, grid: { color: '#f0f0f0' } },
-                x: { ticks: { font: { weight: 'bold', size: 18 }, padding: 15 }, grid: { display: true } }
-            },
-            plugins: { legend: { display: false } }
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
         }
-    });
-}
 
-function finish() {
-    let g1 = {D:0,I:0,S:0,C:0}, g2 = {D:0,I:0,S:0,C:0};
-    for(let i=0; i<24; i++) {
-        let m = document.querySelector(`input[name="m${i}"]:checked`).value;
-        let l = document.querySelector(`input[name="l${i}"]:checked`).value;
-        if(keys[m][0] !== "Mask") g1[keys[m][0]]++;
-        if(keys[l][1] !== "Mask") g2[keys[l][1]]++;
-    }
-    document.getElementById('rName').innerText = "ГРАФИКИ И ЦИФРЫ: " + (document.getElementById('uName').value || "Кандидат");
-    document.getElementById('rDate').innerText = document.getElementById('uDate').value || new Date().toLocaleDateString();
-    document.getElementById('quiz').style.display='none';
-    document.getElementById('results').style.display='block';
-    
-    drawChart('c1', g1, 0, 16);
-    drawChart('c2', g2, 0, 16);
-    drawChart('c3', {D:g1.D-g2.D, I:g1.I-g2.I, S:g1.S-g2.S, C:g1.C-g2.C}, -12, 12);
-}
-</script>
+        function startQuiz() {
+            currentStep = 0;
+            renderQuiz();
+            showPage('page-quiz');
+        }
+
+        function renderQuiz() {
+            const words = questions[currentStep] || questions[0];
+            const mostContainer = document.getElementById('row-most');
+            const leastContainer = document.getElementById('row-least');
+            
+            mostContainer.innerHTML = words.map(w => `<div class="word-item"><label class="word-text">${w}</label><input type="radio" name="m"></div>`).join('');
+            leastContainer.innerHTML = words.map(w => `<div class="word-item"><label class="word-text">${w}</label><input type="radio" name="l"></div>`).join('');
+
+            document.getElementById('progress-text').innerText = `Выполнено ${currentStep + 1} / ${totalSteps}`;
+            document.getElementById('progress-bar').style.width = `${((currentStep + 1) / totalSteps) * 100}%`;
+
+            // Управление кнопками на последнем шаге
+            const isLast = (currentStep === totalSteps - 1);
+            document.getElementById('btn-next').style.display = isLast ? 'none' : 'block';
+            document.getElementById('btn-finish').style.display = isLast ? 'block' : 'none';
+            document.getElementById('finish-notice').style.display = isLast ? 'block' : 'none';
+        }
+
+        function nextQuestion() { if(currentStep < totalSteps - 1) { currentStep++; renderQuiz(); } }
+        function prevQuestion() { if(currentStep > 0) { currentStep--; renderQuiz(); } }
+    </script>
 </body>
 </html>
