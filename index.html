@@ -3,202 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thomas PPA System</title>
+    <title>Thomas PPA Report - ГРАФИКИ И ЦИФРЫ</title>
     <style>
-        :root { --thomas-blue: #004080; --thomas-green: #8DC53F; }
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: var(--thomas-blue); background: #fff; line-height: 1.4; }
-        .header { padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
-        .logo-text { font-size: 24px; font-weight: bold; color: #333; }
-        .divider { height: 8px; background-color: var(--thomas-green); margin-bottom: 15px; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; }
-        .pp-logo { position: absolute; right: 40px; top: 0; font-size: 50px; color: var(--thomas-blue); opacity: 0.8; }
-        .page-title { color: var(--thomas-green); font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-        .section-subtitle { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--thomas-blue); }
-        .instr-content { font-size: 13.5px; line-height: 1.5; color: var(--thomas-blue); max-width: 900px; }
-        .instr-list { list-style: none; padding-left: 25px; margin: 15px 0; font-size: 13.5px; }
-        .instr-list li { margin-bottom: 8px; position: relative; }
-        .instr-list li::before { content: attr(data-step); position: absolute; left: -25px; font-weight: bold; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 15px; }
-        .form-group { display: flex; align-items: center; margin-bottom: 10px; font-size: 13px; }
-        .form-group label { width: 120px; text-align: right; margin-right: 15px; font-weight: bold; }
-        .form-group input, .form-group select { width: 220px; padding: 6px; border: 1px solid #ccc; font-size: 13px; border-radius: 3px; }
-        .btn-thomas { background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%); border: 1px solid #ababab; border-radius: 15px; padding: 7px 30px; cursor: pointer; font-size: 13px; color: #333; font-weight: bold; }
-        .btn-thomas:disabled { opacity: 0.4; cursor: not-allowed; }
-        .progress-section { display: flex; align-items: center; gap: 15px; margin: 20px 0; font-size: 13px; font-weight: bold; }
-        .progress-bar { width: 300px; height: 12px; background: #eee; border-radius: 6px; overflow: hidden; border: 1px solid #ccc; }
-        .progress-fill { height: 100%; background-color: var(--thomas-green); width: 0%; transition: width 0.4s ease; }
-        .quiz-row { display: flex; align-items: center; margin-bottom: 15px; }
-        .row-label { width: 140px; font-size: 13px; font-weight: bold; text-align: right; padding-right: 20px; }
-        .words-wrapper { display: grid; grid-template-columns: repeat(4, 150px); background: #E8F1F8; padding: 15px; border-radius: 6px; }
-        .word-cell { text-align: center; }
-        .word-cell label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
-        .word-cell input[type="radio"] { transform: scale(1.2); cursor: pointer; }
-        .view { display: none; } .active { display: block; }
-        .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid #eee; font-size: 11px; color: #888; }
+        :root { 
+            --thomas-blue: #004080; 
+            --thomas-green: #8DC53F;
+            --graph-bg: #f9f9f9;
+            --zone-color: rgba(141, 197, 63, 0.2); /* Светло-зеленые зоны из PPTX */
+        }
+        
+        /* Настройка печатной страницы А4 по вашим размерам */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: #f0f0f0; 
+        }
+
+        .report-page {
+            width: 210mm;
+            height: 297mm;
+            background: white;
+            margin: 10mm auto;
+            padding: 15mm; /* Поля по вашим направляющим */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Шапка как в PPTX */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        .logo-area { font-size: 28px; font-weight: bold; color: var(--thomas-blue); }
+        .logo-area span { color: var(--thomas-green); }
+        .date-conf { text-align: right; font-size: 10px; color: #555; }
+
+        .report-title { 
+            font-size: 18px; 
+            color: var(--thomas-blue); 
+            border-bottom: 1px solid var(--thomas-green);
+            padding-bottom: 5px;
+            margin-bottom: 40px;
+        }
+
+        /* Сетка графиков */
+        .charts-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .chart-box {
+            width: 60mm; /* Размер по вашей линейке */
+            text-align: center;
+        }
+
+        .chart-title { font-size: 12px; font-weight: bold; margin-bottom: 20px; color: var(--thomas-blue); }
+        
+        /* SVG График */
+        svg {
+            border: 1px solid #ddd;
+            background-color: white;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .axis-label { font-size: 12px; font-weight: bold; fill: var(--thomas-blue); }
+        .data-point { fill: var(--thomas-blue); stroke: white; stroke-width: 2; }
+        .data-line { stroke: var(--thomas-blue); stroke-width: 2; fill: none; }
+        .zone { fill: var(--zone-color); }
+        .baseline { stroke: #999; stroke-width: 1; stroke-dasharray: 4; }
+
+        .raw-numbers {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            width: calc(100% - 30mm);
+            border-top: 1px solid #eee;
+            padding-top: 5px;
+            font-size: 9px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
-    <div class="header"><div class="logo-text">thomas</div></div>
-    <div class="divider"></div>
-    <div class="container">
-        <div class="pp-logo">PP◁</div>
 
-        <section id="view-data" class="view active">
-            <div class="page-title">Профильный Анализ Личности</div>
-            <div class="section-subtitle">Персональные данные</div>
-            <div class="form-grid">
-                <div>
-                    <div class="form-group"><label>Имя *</label><input type="text" id="f-name" oninput="checkForm()"></div>
-                    <div class="form-group"><label>Фамилия *</label><input type="text" id="l-name" oninput="checkForm()"></div>
-                    <div class="form-group"><label>Email *</label><input type="email" id="u-email" oninput="checkForm()"></div>
-                </div>
-                <div>
-                    <div class="form-group"><label>Компания</label><input type="text" id="comp"></div>
-                    <div class="form-group"><label>Должность</label><input type="text" id="pos"></div>
-                    <div class="form-group"><label>Страна *</label><select id="country"><option value="Uzbekistan" selected>Uzbekistan</option></select></div>
-                </div>
-            </div>
-            <button id="submit-data" class="btn-thomas" style="margin: 20px 0 0 135px;" onclick="showView('view-instr')" disabled>Подтвердить</button>
-        </section>
-
-        <section id="view-instr" class="view">
-            <div class="page-title">Профильный Анализ Личности</div>
-            <div class="section-subtitle">Добро пожаловать</div>
-            <div class="instr-content">
-                <p>Профильный Анализ Личности создан для определения предпочитаемого человеком стиля поведения в рабочей среде.</p>
-                <p><b>Это не тест.</b> Здесь нет "правильных" или "неправильных" ответов. Результаты исследования акцентируют внимание на Ваших сильных сторонах в работе и дают полезную информацию, которая поможет Вам лучше соответствовать требованиям рабочей среды.</p>
-                <p>Первый ответ, который приходит Вам в голову, как правило, является самым точным. Анкету необходимо заполнять в одиночестве и не отвлекаясь. Постарайтесь отвечать спонтанно и честно.</p>
-                <p>При заполнении анкеты Профильного Анализа Личности <u>думайте о себе на текущей работе</u>; если Вы в данный момент не работаете, думайте о себе на последнем месте работы. Если Вы никогда не работали, то - о себе дома.</p>
-                
-                <div class="section-subtitle" style="margin-top: 15px;">Инструкция</div>
-                <p>Каждая часть оценки содержит два ряда по четыре описательных слова.</p>
-                <ul class="instr-list">
-                    <li data-step="1.">В первом ряду выберите слово, которое <b>НАИБОЛЕЕ</b> характеризует Вас, нажав на него.</li>
-                    <li data-step="2.">Во втором ряду выберите слово, которое <b>НАИМЕНЕЕ</b> характеризует Вас, нажав на слово.</li>
-                    <li data-step="3.">Вы автоматически перейдете к следующему вопросу. Повторяйте шаги 1 и 2 пока не дадите ответы на все вопросы.</li>
-                </ul>
-                <div style="margin-top: 15px;">
-                    <button class="btn-thomas" onclick="startQuiz()">Продолжить</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-quiz" class="view">
-            <div class="progress-section">
-                <span id="prog-text">Выполнено 1 / 24</span>
-                <div class="progress-bar"><div id="prog-fill" class="progress-fill"></div></div>
-            </div>
-            <div class="quiz-row">
-                <div class="row-label">Точно как я</div><div id="most-container" class="words-wrapper"></div>
-            </div>
-            <div class="quiz-row">
-                <div class="row-label">Совсем не как я</div><div id="least-container" class="words-wrapper"></div>
-            </div>
-            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 15px;">
-                <button class="btn-thomas" onclick="prev()">Предыдущий</button>
-                <button class="btn-thomas" onclick="showView('view-instr')">Инструкция</button>
-                <button id="next-btn" class="btn-thomas" onclick="next()" disabled>Следующий</button>
-                <button id="finish-btn" class="btn-thomas" style="display:none" onclick="submitFinal()">Завершить</button>
-            </div>
-        </section>
-
-        <section id="view-final" class="view">
-            <div class="page-title">Профильный Анализ Личности</div>
-            <div class="section-subtitle">Спасибо за заполнение опросника!</div>
-            <p class="instr-content">Данные успешно отправлены администратору. Теперь вы можете закрыть эту страницу.</p>
-        </section>
-
-        <div class="footer">Copyright © 2002-2026 Thomas International Ltd</div>
+<div class="report-page" id="report">
+    <div class="header">
+        <div class="logo-area">thomas<span>*</span></div>
+        <div class="date-conf">
+            03.02.2026<br>
+            Лично и конфиденциально
+        </div>
     </div>
 
-    <script>
-        const questions = [
-            ["мягкий", "убеждающий", "скромный", "оригинальный"], ["привлекательный", "обязательный", "упорный", "милый"],
-            ["неугомонный", "добрососедский", "популярный", "преданный"], ["уверенный", "сочувствующий", "терпимый", "решительный"],
-            ["возбужденный", "спокойный", "независимый", "аккуратный"], ["общительный", "неприступный", "дипломатичный", "смелый"],
-            ["требовательный", "терпеливый", "самоуверенный", "предупредительный"], ["энергичный", "приветливый", "внимательный", "напористый"],
-            ["влиятельный", "добрый", "тщательный", "спорщик"], ["скромный", "послушный", "находчивый", "дружелюбный"],
-            ["непоколебимый", "жизнерадостный", "уважительный", "уступчивый"], ["азартный", "спокойный", "притягательный", "предусмотрительный"],
-            ["настойчивый", "веселый", "миролюбивый", "утонченный"], ["сдержанный", "общительный", "непреклонный", "отзывчивый"],
-            ["услужливый", "волевой", "оптимистичный", "логичный"], ["старательный", "непосредственный", "неустрашимый", "тихий"],
-            ["обходительный", "независимый", "красноречивый", "умеренный"], ["инициативный", "доверчивый", "уравновешенный", "точный"],
-            ["агрессивный", "легкий", "понимающий", "бодрый"], ["рассудительный", "соревнующийся", "положительный", "покладистый"],
-            ["дисциплинированный", "великодушный", "одухотворенный", "стойкий"], ["импульсивный", "заботливый", "неподатливый", "застенчивый"],
-            ["крайне активный", "приятный", "проницательный", "уступчивый"], ["неугомонный", "добрососедский", "популярный", "преданный"]
-        ];
+    <div class="report-title">
+        ГРАФИКИ И ЦИФРЫ: <span id="candidate-name">Илья Радько</span>
+    </div>
 
-        let currentStep = 0, results = [], startTime;
+    <div class="charts-container">
+        <div class="chart-box">
+            <div class="chart-title">I<br>Поведение на работе</div>
+            <svg width="180" height="320" viewBox="0 0 180 320" id="chart1"></svg>
+            <div class="raw-numbers" id="vals1"></div>
+        </div>
 
-        function checkForm() {
-            const isReady = document.getElementById('f-name').value && document.getElementById('l-name').value && document.getElementById('u-email').value;
-            document.getElementById('submit-data').disabled = !isReady;
-        }
+        <div class="chart-box">
+            <div class="chart-title">II<br>Поведение под давлением</div>
+            <svg width="180" height="320" viewBox="0 0 180 320" id="chart2"></svg>
+            <div class="raw-numbers" id="vals2"></div>
+        </div>
 
-        function showView(id) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
-        }
+        <div class="chart-box">
+            <div class="chart-title">III<br>Автопортрет</div>
+            <svg width="180" height="320" viewBox="0 0 180 320" id="chart3"></svg>
+            <div class="raw-numbers" id="vals3"></div>
+        </div>
+    </div>
 
-        function startQuiz() { 
-            startTime = new Date(); 
-            showView('view-quiz'); 
-            renderStep(); 
-        }
+    <div class="footer">
+        <div>Copyright © 2002-2021 Thomas International Ltd</div>
+        <div>https://www.thomas.co/website-terms/</div>
+        <div>1</div>
+    </div>
+</div>
 
-        function renderStep() {
-            const words = questions[currentStep];
-            document.getElementById('most-container').innerHTML = words.map((w, i) => `<div class="word-cell"><label>${w}</label><input type="radio" name="most" value="${w}" onchange="syncChoices(${i}, 'least')"></div>`).join('');
-            document.getElementById('least-container').innerHTML = words.map((w, i) => `<div class="word-cell"><label>${w}</label><input type="radio" name="least" value="${w}" onchange="syncChoices(${i}, 'most')"></div>`).join('');
-            document.getElementById('prog-text').innerText = `Выполнено ${currentStep + 1} / 24`;
-            document.getElementById('prog-fill').style.width = `${((currentStep + 1) / 24) * 100}%`;
-            updateNav();
-        }
+<script>
+    // Данные по вашему скриншоту для Ильи Радько
+    const data = {
+        g1: [12, 5, -2, 2],   // Поведение на работе
+        g2: [8, -4, -10, -7], // Поведение под давлением (примерные по графику)
+        g3: [12, 1, -8, -5]   // Автопортрет
+    };
 
-        function syncChoices(idx, otherName) {
-            const otherRadios = document.getElementsByName(otherName);
-            if (otherRadios[idx].checked) otherRadios[idx].checked = false;
-            updateNav();
-        }
+    function drawDISC(svgId, valId, points) {
+        const svg = document.getElementById(svgId);
+        const valDiv = document.getElementById(valId);
+        const width = 180;
+        const height = 320;
+        const margin = 30;
+        const xDist = (width - margin * 2) / 3;
+        const centerY = height / 2;
+        const scale = 12; // Коэффициент масштабирования высоты
 
-        function updateNav() {
-            const isDone = document.querySelector('input[name="most"]:checked') && document.querySelector('input[name="least"]:checked');
-            document.getElementById('next-btn').disabled = !isDone || currentStep === 23;
-            document.getElementById('finish-btn').style.display = (currentStep === 23 && isDone) ? 'inline-block' : 'none';
-            document.getElementById('next-btn').style.display = (currentStep === 23) ? 'none' : 'inline-block';
-        }
-
-        function next() { saveStep(); currentStep++; renderStep(); }
-        function prev() { if (currentStep > 0) { currentStep--; renderStep(); } }
+        // 1. Рисуем зоны (зеленые плашки как в PPTX)
+        svg.innerHTML += `<rect x="0" y="${centerY - 80}" width="${width}" height="40" class="zone" />`; // Верхняя
+        svg.innerHTML += `<rect x="0" y="${centerY - 15}" width="${width}" height="30" class="zone" />`; // Средняя
+        svg.innerHTML += `<rect x="0" y="${centerY + 60}" width="${width}" height="40" class="zone" />`; // Нижняя
         
-        function saveStep() {
-            const m = document.querySelector('input[name="most"]:checked');
-            const l = document.querySelector('input[name="least"]:checked');
-            if (m && l) results[currentStep] = `Группа ${currentStep+1}: НАИБОЛЕЕ: ${m.value}, НАИМЕНЕЕ: ${l.value}`;
-        }
+        // Базовая линия (0)
+        svg.innerHTML += `<line x1="0" y1="${centerY}" x2="${width}" y2="${centerY}" class="baseline" />`;
 
-        function submitFinal() {
-            saveStep();
-            const timeDiff = Math.floor((new Date() - startTime) / 1000);
-            const minutes = Math.floor(timeDiff / 60);
-            const seconds = timeDiff % 60;
-            
-            const formData = {
-                "access_key": "7594f570-4bf5-4cc7-96e3-63dd58f6b3ae",
-                "subject": "Результаты Thomas PPA: " + document.getElementById('f-name').value + " " + document.getElementById('l-name').value,
-                "Кандидат": document.getElementById('f-name').value + " " + document.getElementById('l-name').value,
-                "Email": document.getElementById('u-email').value,
-                "Компания": document.getElementById('comp').value || "Не указана",
-                "Затраченное время": `${minutes} мин. ${seconds} сек.`,
-                "ОТЧЕТ": "\n" + results.join('\n')
-            };
+        // 2. Координаты точек
+        const coords = points.map((v, i) => ({
+            x: margin + i * xDist,
+            y: centerY - (v * scale)
+        }));
 
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(formData)
-            }).finally(() => { showView('view-final'); });
-        }
-    </script>
+        // 3. Рисуем линии между точками
+        let pathD = `M ${coords[0].x} ${coords[0].y}`;
+        for(let i=1; i<coords.length; i++) pathD += ` L ${coords[i].x} ${coords[i].y}`;
+        svg.innerHTML += `<path d="${pathD}" class="data-line" />`;
+
+        // 4. Рисуем точки и подписи осей
+        const labels = ['D', 'I', 'S', 'C'];
+        coords.forEach((p, i) => {
+            svg.innerHTML += `<circle cx="${p.x}" cy="${p.y}" r="5" class="data-point" />`;
+            svg.innerHTML += `<text x="${p.x}" y="20" text-anchor="middle" class="axis-label">${labels[i]}</text>`;
+        });
+
+        // 5. Выводим цифры под графиком
+        valDiv.innerHTML = points.map(v => `<span>${v}</span>`).join('');
+    }
+
+    // Отрисовка
+    drawDISC('chart1', 'vals1', data.g1);
+    drawDISC('chart2', 'vals2', data.g2);
+    drawDISC('chart3', 'vals3', data.g3);
+</script>
+
 </body>
 </html>
